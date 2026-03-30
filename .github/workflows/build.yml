@@ -312,7 +312,7 @@ jobs:
       with:
         token: ${{ github.token }}
         # tag_name:  ${{ github.event.release.tag_name }}
-        prerelease: ${{ github.event.inputs.prerelease == 'false' && false || true }}
+        prerelease: ${{ github.event.inputs.prerelease != 'false' }}
         draft: false
         # name:  ${{ github.event.release.tag_name }}
         name:  ${{ steps.read_ver.outputs.rv }}
