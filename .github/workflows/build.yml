@@ -54,7 +54,7 @@ jobs:
           echo ${{ github.event.release.tag_name }}
           echo ${GITHUB_REF#refs/*/}
      - name: upload
-       uses: actions/upload-artifact@v5
+       uses: actions/upload-artifact@v6
        with:
          name: release_tag
          path: v.txt
@@ -138,7 +138,7 @@ jobs:
           dest: ${{ steps.build_exe.outputs.exez }}
 
       - name: upload
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: gnu-${{ steps.build_exe.outputs.os }}
           path: ${{ steps.build_exe.outputs.exez }}
@@ -183,7 +183,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Download version
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: release_tag
 
@@ -253,7 +253,7 @@ jobs:
           dest: ${{ steps.build_exe.outputs.exez }}
 
       - name: upload
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: intel-${{ steps.build_exe.outputs.os }}
           path: ${{ steps.build_exe.outputs.exez }}
@@ -266,37 +266,37 @@ jobs:
 
     steps:
     - name: Download GNU Linux
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: gnu-Linux
 
     - name: Download GNU Windows
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: gnu-Windows
 
     - name: Download GNU macOS
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: gnu-macOS
 
     - name: Download Intel Linux
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: intel-Linux
 
     - name: Download Intel Windows
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: intel-Windows
 
     - name: Download Intel macOS
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: intel-macOS
 
     - name: Download version
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: release_tag
 
