@@ -15,6 +15,14 @@ on:
         description: 'tag, branch, or SHA to check out'
         required: true
         default: 'develop'
+      prerelease:
+        description: 'Mark as pre-release?'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 permissions:
   contents: write
@@ -304,7 +312,7 @@ jobs:
       with:
         token: ${{ github.token }}
         # tag_name:  ${{ github.event.release.tag_name }}
-        prerelease: true
+        prerelease: ${{ github.event.inputs.prerelease == 'false' && false || true }}
         draft: false
         # name:  ${{ github.event.release.tag_name }}
         name:  ${{ steps.read_ver.outputs.rv }}
