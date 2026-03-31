@@ -293,6 +293,7 @@ jobs:
         name: intel-Windows
 
     - name: Download Intel macOS
+      continue-on-error: true
       uses: actions/download-artifact@v6
       with:
         name: intel-macOS
