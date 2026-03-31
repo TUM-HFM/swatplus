@@ -166,6 +166,8 @@ jobs:
             toolchain: {compiler: intel-classic, version: '2021.9'}
           - os: ubuntu-latest
             toolchain: {compiler: intel-classic, version: '2021.9'}
+          - os: macos-latest
+            toolchain: {compiler: intel-classic, version: '2021.9'}
 
     steps:
       - name: Checkout
