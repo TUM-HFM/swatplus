@@ -34,5 +34,38 @@
                 "CMAKE_Fortran_COMPILER": "gfortran"
             }
         }
-    ]
+
+        {
+    "name": "ifx_release_linux",
+    "displayName": "ifx release version",
+    "description": "Builds a ifx release executable for swatplus for linux",
+    "binaryDir": "${sourceDir}/../swatplus-build-linux-ifx-release",
+    "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+    },
+    "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../swatplus-build-linux-ifx-release",
+        "CMAKE_Fortran_COMPILER": "ifx"
+    }
+},
+{
+    "name": "gfortran_release_linux",
+    "displayName": "gfortran release version",
+    "description": "Builds a gfortran release executable for swatplus for linux",
+    "binaryDir": "${sourceDir}/../swatplus-build-linux-gfortran-release",
+    "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+    },
+    "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../swatplus-build-linux-gfortran-release",
+        "CMAKE_Fortran_COMPILER": "gfortran"
+    }
 }
+    ]
+
