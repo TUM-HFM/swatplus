@@ -33,7 +33,7 @@
                 "CMAKE_INSTALL_PREFIX": "build/debug",
                 "CMAKE_Fortran_COMPILER": "gfortran"
             }
-        }
+        },
 
         {
     "name": "ifx_release_linux",
@@ -68,4 +68,5 @@
     }
 }
     ]
+}
 
