@@ -111,6 +111,7 @@ endif()
 
 # SWAT Version number
 set(SWAT_VERSION ${TAG})
+string(REPLACE "/" "-" SWAT_VERSION_SAFE "${SWAT_VERSION}")
 set(SWATPLUS_EXE "swatplus-${SWAT_VERSION}-${FFC}-${AR}${TY}")
 
 # Set this to 'TRUE' to see the fortran command on compile

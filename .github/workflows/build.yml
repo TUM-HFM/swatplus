@@ -7,6 +7,7 @@ on:
     tags:
       - '*.*'
       - '*.*.*'
+      - 'HFM-*'
 
   workflow_dispatch:
     inputs:
@@ -14,6 +15,14 @@ on:
         description: 'tag, branch, or SHA to check out'
         required: true
         default: 'develop'
+      prerelease:
+        description: 'Mark as pre-release?'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 permissions:
   contents: write
@@ -30,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
      - name: Checkout
-       uses: actions/checkout@v4
+       uses: actions/checkout@v5
        with:
          ref: '${{ github.event.inputs.rev }}'
          fetch-tags: true
@@ -45,7 +54,7 @@ jobs:
           echo ${{ github.event.release.tag_name }}
           echo ${GITHUB_REF#refs/*/}
      - name: upload
-       uses: actions/upload-artifact@v4
+       uses: actions/upload-artifact@v6
        with:
          name: release_tag
          path: v.txt
@@ -73,7 +82,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Build SWAT+
         id: build_exe
@@ -129,7 +138,7 @@ jobs:
           dest: ${{ steps.build_exe.outputs.exez }}
 
       - name: upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: gnu-${{ steps.build_exe.outputs.os }}
           path: ${{ steps.build_exe.outputs.exez }}
@@ -157,10 +166,12 @@ jobs:
             toolchain: {compiler: intel-classic, version: '2021.9'}
           - os: ubuntu-latest
             toolchain: {compiler: intel-classic, version: '2021.9'}
+          - os: macos-latest
+            toolchain: {compiler: intel-classic, version: '2021.9'}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: '${{ github.event.inputs.rev }}'
         #   fetch-tags: true
@@ -174,7 +185,7 @@ jobs:
           version: ${{ matrix.toolchain.version }}
 
       - name: Download version
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: release_tag
 
@@ -244,7 +255,7 @@ jobs:
           dest: ${{ steps.build_exe.outputs.exez }}
 
       - name: upload
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: intel-${{ steps.build_exe.outputs.os }}
           path: ${{ steps.build_exe.outputs.exez }}
@@ -257,37 +268,38 @@ jobs:
 
     steps:
     - name: Download GNU Linux
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: gnu-Linux
 
     - name: Download GNU Windows
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: gnu-Windows
 
     - name: Download GNU macOS
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: gnu-macOS
 
     - name: Download Intel Linux
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: intel-Linux
 
     - name: Download Intel Windows
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: intel-Windows
 
     - name: Download Intel macOS
-      uses: actions/download-artifact@v4
+      continue-on-error: true
+      uses: actions/download-artifact@v6
       with:
         name: intel-macOS
 
     - name: Download version
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v6
       with:
         name: release_tag
 
@@ -299,16 +311,29 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v2
-      if: startsWith(github.ref, 'refs/tags/')
+      if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
       with:
         token: ${{ github.token }}
+        tag_name: ${{ github.event.inputs.rev || github.ref_name }}
         # tag_name:  ${{ github.event.release.tag_name }}
-        prerelease: true
+        prerelease: ${{ github.event.inputs.prerelease != 'false' }}
         draft: false
         # name:  ${{ github.event.release.tag_name }}
         name:  ${{ steps.read_ver.outputs.rv }}
         files: swatplus-*
         generate_release_notes: true
+        body:  |
+        **Download Guide**
+      
+        | File | Platform | Notes |
+        |---|---|---|
+        | `swatplus-*-gcc-win*` | Windows | ✅ No installation needed |
+        | `swatplus-*-ifx-win*` | Windows | ⚠️ Requires Intel Redistributable DLLs |
+        | `swatplus-*-gcc-lin*` | Linux | ✅ No installation needed |
+        | `swatplus-*-ifx-lin*` | Linux | ✅ No installation needed |
+        | `swatplus-*-gcc-mac*` | macOS | ✅ No installation needed |
+      
+      **Windows Intel users:** Download the Intel Redistributable from Intel's website (https://www.intel.com/content/www/us/en/developer/articles/tool/compilers-redistributable-libraries-by-version.html) before running.
 
 
 
