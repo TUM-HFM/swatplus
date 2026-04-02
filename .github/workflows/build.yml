@@ -8,6 +8,7 @@ on:
       - '*.*'
       - '*.*.*'
       - 'HFM-*'
+      - 'main-*'
 
   workflow_dispatch:
     inputs:
