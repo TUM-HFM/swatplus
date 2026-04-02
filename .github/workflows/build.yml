@@ -8,6 +8,7 @@ on:
       - '*.*'
       - '*.*.*'
       - 'HFM-*'
+      - 'main-*'
 
   workflow_dispatch:
     inputs:
@@ -322,18 +323,17 @@ jobs:
         name:  ${{ steps.read_ver.outputs.rv }}
         files: swatplus-*
         generate_release_notes: true
-        body:  |
-        **Download Guide**
-      
-        | File | Platform | Notes |
-        |---|---|---|
-        | `swatplus-*-gcc-win*` | Windows | ✅ No installation needed |
-        | `swatplus-*-ifx-win*` | Windows | ⚠️ Requires Intel Redistributable DLLs |
-        | `swatplus-*-gcc-lin*` | Linux | ✅ No installation needed |
-        | `swatplus-*-ifx-lin*` | Linux | ✅ No installation needed |
-        | `swatplus-*-gcc-mac*` | macOS | ✅ No installation needed |
-      
-      **Windows Intel users:** Download the Intel Redistributable from Intel's website (https://www.intel.com/content/www/us/en/developer/articles/tool/compilers-redistributable-libraries-by-version.html) before running.
+        body: |
+          ## Download Guide
 
+          | File | Platform | Notes |
+          |---|---|---|
+          | `swatplus-*-gcc-win*` | Windows | ✅ No installation needed |
+          | `swatplus-*-ifx-win*` | Windows | ⚠️ Requires Intel Redistributable DLLs |
+          | `swatplus-*-gcc-lin*` | Linux | ✅ No installation needed |
+          | `swatplus-*-ifx-lin*` | Linux | ✅ No installation needed |
+          | `swatplus-*-gcc-mac*` | macOS | ✅ No installation needed |
+
+          **Windows Intel users:** Download the Intel Redistributable from [Intel's website](https://www.intel.com/content/www/us/en/developer/articles/tool/compilers-redistributable-libraries-by-version.html) before running.
 
 
