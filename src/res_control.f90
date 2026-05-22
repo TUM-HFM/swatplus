@@ -36,8 +36,15 @@
       
         !! adjust precip and temperature for elevation using lapse rates
         w = wst(iwst)%weat
-        if (bsn_cc%lapse == 1) call cli_lapse
-        wst(iwst)%weat = w
+        if (bsn_cc%lapse == 1) then
+          if (wst(iwst)%weat%precip > 0.) then
+            wst(iwst)%weat%precip = wst(iwst)%weat%precip + ob(iob)%plaps
+            wst(iwst)%weat%precip = max (0., wst(iwst)%weat%precip)
+          end if
+          wst(iwst)%weat%tave = wst(iwst)%weat%tave + ob(iob)%tlaps
+          wst(iwst)%weat%tmax = wst(iwst)%weat%tmax + ob(iob)%tlaps
+          wst(iwst)%weat%tmin = wst(iwst)%weat%tmin + ob(iob)%tlaps
+        end if
       
         !! set water body pointer to res
         wbody => res(jres)
@@ -173,19 +180,23 @@
           !res_wat_d(jres)%evap = res_wat_d(jres)%evap / 10000.      !m^3 -> ha-m
           !res_wat_d(jres)%seep = res_wat_d(jres)%seep / 10000.      !m^3 -> ha-m
           !res_wat_d(jres)%precip = res_wat_d(jres)%precip / 10000.  !m^3 -> ha-m
-        end if             
-        
+        end if
+
+        !! restore raw station weather so other objects sharing this station
+        !! are not affected by this reservoir's lapse correction
+        if (bsn_cc%lapse == 1) wst(iwst)%weat = w
+
       else
         !! reservoir has not been constructed yet
         ob(icmd)%hd(1) = ob(icmd)%hin
       end if
 
-  !!!! for Luis only    
+  !!!! for Luis only
       !if (jres == 1) then
       !  write (7777,*) time%day, time%yrc, jres, res(jres)%flo, ht1%flo, ht2%flo,   &
       !                                           res(jres)%sed, ht1%sed, ht2%sed
       !end if
   !!!! for Luis only
-      
+
       return
       end subroutine res_control
