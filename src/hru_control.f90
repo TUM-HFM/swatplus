@@ -101,8 +101,10 @@
       w = wst(iwst)%weat
       !! adjust precip and temperature for elevation using lapse rates
       if (bsn_cc%lapse == 1) then
-        w%precip = w%precip + ob(iob)%plaps
-        w%precip = max (0., w%precip)
+        if (w%precip > 0.) then
+          w%precip = w%precip + ob(iob)%plaps
+          w%precip = max (0., w%precip)
+        end if
         w%tmax = w%tmax + ob(iob)%tlaps
         w%tmin = w%tmin + ob(iob)%tlaps
         w%tave = w%tave + ob(iob)%tlaps
