@@ -57,7 +57,6 @@
          icmd = ob(icmd)%cmd_next
         end do 
           
-      call cli_lapse
       call object_read_output
 
       call om_water_init
@@ -111,7 +110,8 @@
       end do
       
       call proc_cal
-      
+      call cli_lapse
+
       call proc_open
       
         
