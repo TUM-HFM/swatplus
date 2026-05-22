@@ -149,8 +149,15 @@
       
       !! adjust precip and temperature for elevation using lapse rates
       w = wst(iwst)%weat
-      if (bsn_cc%lapse == 1) call cli_lapse
-      wst(iwst)%weat = w
+      if (bsn_cc%lapse == 1) then
+        if (wst(iwst)%weat%precip > 0.) then
+          wst(iwst)%weat%precip = wst(iwst)%weat%precip + ob(icmd)%plaps
+          wst(iwst)%weat%precip = max (0., wst(iwst)%weat%precip)
+        end if
+        wst(iwst)%weat%tave = wst(iwst)%weat%tave + ob(icmd)%tlaps
+        wst(iwst)%weat%tmax = wst(iwst)%weat%tmax + ob(icmd)%tlaps
+        wst(iwst)%weat%tmin = wst(iwst)%weat%tmin + ob(icmd)%tlaps
+      end if
       ht1%temp = 5.0 + 0.75 * wst(iwst)%weat%tave
       wtemp = 5.0 + 0.75 * wst(iwst)%weat%tave
 
@@ -544,6 +551,10 @@
       !! set values for recharge hydrograph - should be trans losses
       !ob(icmd)%hd(2)%flo = perc  
 
+      !! restore raw station weather so other objects sharing this station
+      !! are not affected by this channel's lapse correction
+      if (bsn_cc%lapse == 1) wst(iwst)%weat = w
+
       return
-      
+
       end subroutine sd_channel_control3
