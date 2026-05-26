@@ -70,11 +70,13 @@
   
         !! set demand for each object
         call wallo_demand (iwallo, idmd)
- 
+
+        !! zero withdrawal hydrograph unconditionally so wallo_transfer never
+        !! carries a stale value from the previous demand day on non-demand days
+        wallo(iwallo)%dmd(idmd)%hd = hz
+
         !! if demand - check source availability
         if (wallod_out(iwallo)%dmd(idmd)%dmd_tot > 0.) then
-            
-          wallo(iwallo)%dmd(idmd)%hd = hz
           !! check if water is available from each source - set withdrawal and unmet
           do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
             dmd_m3 = wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand

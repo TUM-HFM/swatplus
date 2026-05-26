@@ -173,7 +173,7 @@
 
         !! set inflow and outflow variables for reservoir_output
         if (time%yrs > pco%nyskip) then
-          res_in_d(jres) = ht1 
+          res_in_d(jres) = res_in_d(jres) + ht1
           res_out_d(jres) = ht2
           !res_in_d(jres)%flo = res_in_d(jres)%flo / 10000.          !m^3 -> ha-m
           !res_out_d(jres)%flo = res_out_d(jres)%flo / 10000.        !m^3 -> ha-m
