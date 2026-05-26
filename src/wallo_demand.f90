@@ -46,7 +46,7 @@
             !! use decision table for flow control - water allocation
             id = wallo(iwallo)%dmd(idmd)%rec_num
             d_tbl => dtbl_flo(id)
-            j = 0
+            j = wallo(iwallo)%dmd(idmd)%ob_num
             icmd = res_ob(j)%ob
             call conditions (j, id)
             call actions (j, icmd, id)
