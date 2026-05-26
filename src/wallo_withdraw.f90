@@ -56,7 +56,7 @@
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
           res_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * res_ob(j)%pvol
           res_vol = res(j)%flo - dmd_m3
-          if (res_vol > res_min) then
+          if (res_vol >= res_min) then
             rto = dmd_m3 / res(j)%flo
             ht5 = rto * res(j)
             res(j) = (1. - rto) * res(j)
@@ -86,7 +86,7 @@
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
           avail = (wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) - aqu_d(j)%dep_wt)  * aqu_dat(j)%spyld
           avail = avail * 10000. * aqu_prm(j)%area_ha     !m3 = 10,000*ha*m
-          if (dmd_m3 < avail) then
+          if (dmd_m3 <= avail) then
             !! only have flow, no3, and minp(solp) for aquifer
             ht5%flo = dmd_m3
             aqu_d(j)%stor = aqu_d(j)%stor - (dmd_m3 / (10. * aqu_prm(j)%area_ha))  !mm = m3/(10.*ha)
