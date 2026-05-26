@@ -70,11 +70,13 @@
   
         !! set demand for each object
         call wallo_demand (iwallo, idmd)
- 
+
+        !! zero withdrawal hydrograph unconditionally so wallo_transfer never
+        !! carries a stale value from the previous demand day on non-demand days
+        wallo(iwallo)%dmd(idmd)%hd = hz
+
         !! if demand - check source availability
         if (wallod_out(iwallo)%dmd(idmd)%dmd_tot > 0.) then
-            
-          wallo(iwallo)%dmd(idmd)%hd = hz
           !! check if water is available from each source - set withdrawal and unmet
           do isrc = 1, wallo(iwallo)%dmd(idmd)%dmd_src_obs
             dmd_m3 = wallod_out(iwallo)%dmd(idmd)%src(isrc)%demand
@@ -108,7 +110,7 @@
               j = wallo(iwallo)%dmd(idmd)%ob_num
               irr_mm = wallo(iwallo)%dmd(idmd)%withdr_tot / (hru(j)%area_ha * 10.)      !mm = m3 / (ha * 10.)
               irrig(j)%applied = irr_mm * wallo(iwallo)%dmd(idmd)%irr_eff * (1. - wallo(iwallo)%dmd(idmd)%surq)
-              irrig(j)%runoff = wallo(iwallo)%dmd(idmd)%amount * wallo(iwallo)%dmd(idmd)%surq
+              irrig(j)%runoff = irr_mm * wallo(iwallo)%dmd(idmd)%surq
               pcom(j)%days_irr = 1            ! reset days since last irrigation
               
               !rtb salt: irrigation salt mass accounting

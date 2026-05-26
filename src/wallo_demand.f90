@@ -46,8 +46,9 @@
             !! use decision table for flow control - water allocation
             id = wallo(iwallo)%dmd(idmd)%rec_num
             d_tbl => dtbl_flo(id)
-            j = 0
+            j = wallo(iwallo)%dmd(idmd)%ob_num
             icmd = res_ob(j)%ob
+            dmd_m3 = 0.
             call conditions (j, id)
             call actions (j, icmd, id)
             wallod_out(iwallo)%dmd(idmd)%dmd_tot = dmd_m3
@@ -57,7 +58,7 @@
         case ("divert")
           !! use average daily or a flow control decision table
           if (wallo(iwallo)%dmd(idmd)%withdr == "ave_day") then
-            wallod_out(iwallo)%dmd(idmd)%dmd_tot = wallo(iwallo)%dmd(idmd)%amount  
+            wallod_out(iwallo)%dmd(idmd)%dmd_tot = wallo(iwallo)%dmd(idmd)%amount
           else
             !! use decision table for flow control - water allocation
             id = wallo(iwallo)%dmd(idmd)%rec_num   !dtbl_flo(i)%act_typ(iac)
@@ -65,6 +66,7 @@
             !icmd is source channel object number
             icmd = sp_ob1%chandeg + wallo(iwallo)%cha - 1
             d_tbl => dtbl_flo(id)
+            trans_m3 = 0.
             call conditions (ich, id)
             call actions (ich, icmd, id)
             wallod_out(iwallo)%dmd(idmd)%dmd_tot = trans_m3

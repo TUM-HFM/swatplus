@@ -93,7 +93,8 @@ endif()
 # SWAT Version number
 set(SWAT_VERSION ${TAG})
 string(REPLACE "/" "-" SWAT_VERSION_SAFE "${SWAT_VERSION}")
-set(SWATPLUS_EXE "swatplus-${SWAT_VERSION_SAFE}-${FFC}-${AR}${TY}")
+string(REGEX REPLACE "(-[0-9]+-g[0-9a-f]+)$" "" SWAT_VERSION_BASE "${SWAT_VERSION_SAFE}")
+set(SWATPLUS_EXE "swatplus-${SWAT_VERSION_BASE}-${FFC}-${AR}${TY}")
 
 # Enable this to 'TRUE' to see the fortran command on compile
 set(CMAKE_VERBOSE_MAKEFILE FALSE)

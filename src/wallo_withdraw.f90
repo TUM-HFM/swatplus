@@ -41,7 +41,7 @@
         cha_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * 86400.  !m3 = m3/s * 86400s/d
         !! amount that can be diverted without falling below low flow limit
         cha_div = ht2%flo - cha_min
-        if (dmd_m3 < cha_div) then
+        if (dmd_m3 <= cha_div) then
           rto = dmd_m3 / ht2%flo
           ht5 = rto * ht2
           ht2 = (1. - rto) * ht2
@@ -56,7 +56,7 @@
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
           res_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * res_ob(j)%pvol
           res_vol = res(j)%flo - dmd_m3
-          if (res_vol > res_min) then
+          if (res_vol >= res_min) then
             rto = dmd_m3 / res(j)%flo
             ht5 = rto * res(j)
             res(j) = (1. - rto) * res(j)
@@ -69,7 +69,7 @@
         case ("div_rec") 
           j = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
-          if (wallo(iwallo)%src(isrc)%div_vol > dmd_m3) then
+          if (wallo(iwallo)%src(isrc)%div_vol >= dmd_m3) then
             irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
             rto = dmd_m3 / wallo(iwallo)%src(isrc)%div_vol
             ht5 = (1. - rto) * recall(irec)%hd(time%day,time%yrs)
@@ -86,7 +86,7 @@
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
           avail = (wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) - aqu_d(j)%dep_wt)  * aqu_dat(j)%spyld
           avail = avail * 10000. * aqu_prm(j)%area_ha     !m3 = 10,000*ha*m
-          if (dmd_m3 < avail) then
+          if (dmd_m3 <= avail) then
             !! only have flow, no3, and minp(solp) for aquifer
             ht5%flo = dmd_m3
             aqu_d(j)%stor = aqu_d(j)%stor - (dmd_m3 / (10. * aqu_prm(j)%area_ha))  !mm = m3/(10.*ha)

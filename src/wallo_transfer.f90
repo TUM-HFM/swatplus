@@ -6,6 +6,7 @@
       use aquifer_module
       use reservoir_module
       use time_module
+      use basin_module
       
       implicit none 
 
@@ -23,9 +24,11 @@
         ob(iob)%trans = wallo(iwallo)%dmd(idmd)%hd
             
       !! reservor source
-      case ("res") 
+      case ("res")
         j = wallo(iwallo)%dmd(idmd)%rcv_num
         res(j) = res(j) + wallo(iwallo)%dmd(idmd)%hd
+        if (time%yrs > pco%nyskip) &
+          res_in_d(j) = res_in_d(j) + wallo(iwallo)%dmd(idmd)%hd
             
       !! aquifer source
       case ("aqu") 
