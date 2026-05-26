@@ -41,7 +41,7 @@
         cha_min = wallo(iwallo)%src(isrc_wallo)%limit_mon(time%mo) * 86400.  !m3 = m3/s * 86400s/d
         !! amount that can be diverted without falling below low flow limit
         cha_div = ht2%flo - cha_min
-        if (dmd_m3 < cha_div) then
+        if (dmd_m3 <= cha_div) then
           rto = dmd_m3 / ht2%flo
           ht5 = rto * ht2
           ht2 = (1. - rto) * ht2
