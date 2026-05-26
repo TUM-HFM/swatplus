@@ -683,19 +683,19 @@
               trans_m3 = d_tbl%act(iac)%const * 86400.
 
             case ("min_cms")    !! minimum flow rate (m3/s)
-              if (ob(ob_num)%hd(1)%flo / 86400. < d_tbl%act(iac)%const + .0001) then
+              if (ht2%flo / 86400. < d_tbl%act(iac)%const + .0001) then
                 !! below min - all flow to downstream channel (first outflow hydrograph in connect file)
                 trans_m3 = 0.
               else
-                !! above min flow 
-                trans_m3 = ob(ob_num)%hd(1)%flo - d_tbl%act(iac)%const * 86400.
+                !! above min flow
+                trans_m3 = ht2%flo - d_tbl%act(iac)%const * 86400.
               end if
-              
-            case ("all_flo")    !! all flow diverted
-              trans_m3 = ob(ob_num)%hd(1)%flo
 
-            case ("min_frac")   !! minimum - constant fraction 
-              trans_m3 = d_tbl%act(iac)%const * ob(ob_num)%hd(1)%flo
+            case ("all_flo")    !! all flow diverted
+              trans_m3 = ht2%flo
+
+            case ("min_frac")   !! minimum - constant fraction
+              trans_m3 = d_tbl%act(iac)%const * ht2%flo
               
             case ("recall")
               irec = d_tbl%act_typ(iac)
