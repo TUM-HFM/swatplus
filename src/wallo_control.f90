@@ -108,7 +108,7 @@
               j = wallo(iwallo)%dmd(idmd)%ob_num
               irr_mm = wallo(iwallo)%dmd(idmd)%withdr_tot / (hru(j)%area_ha * 10.)      !mm = m3 / (ha * 10.)
               irrig(j)%applied = irr_mm * wallo(iwallo)%dmd(idmd)%irr_eff * (1. - wallo(iwallo)%dmd(idmd)%surq)
-              irrig(j)%runoff = wallo(iwallo)%dmd(idmd)%amount * wallo(iwallo)%dmd(idmd)%surq
+              irrig(j)%runoff = irr_mm * wallo(iwallo)%dmd(idmd)%surq
               pcom(j)%days_irr = 1            ! reset days since last irrigation
               
               !rtb salt: irrigation salt mass accounting
