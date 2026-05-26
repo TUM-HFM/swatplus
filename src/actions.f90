@@ -726,6 +726,14 @@
                 dmd_m3 = d_tbl%act(iac)%const * res_ob(j)%evol - res(j)%flo
                 dmd_m3 = Max (0., dmd_m3)
               end if
+            !! demand is to release volume above spillway target
+            case ("release")
+              if (d_tbl%act(iac)%file_pointer == "pvol") then
+                dmd_m3 = Max(0., res(j)%flo - d_tbl%act(iac)%const * res_ob(j)%pvol)
+              end if
+              if (d_tbl%act(iac)%file_pointer == "evol") then
+                dmd_m3 = Max(0., res(j)%flo - d_tbl%act(iac)%const * res_ob(j)%evol)
+              end if
             end select
                                                                         
           !flow control for water allocation - needs to be modified***
