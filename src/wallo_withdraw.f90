@@ -69,7 +69,7 @@
         case ("div_rec") 
           j = wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_num
           isrc_wallo = wallo(iwallo)%dmd(idmd)%src(isrc)%src
-          if (wallo(iwallo)%src(isrc)%div_vol > dmd_m3) then
+          if (wallo(iwallo)%src(isrc)%div_vol >= dmd_m3) then
             irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
             rto = dmd_m3 / wallo(iwallo)%src(isrc)%div_vol
             ht5 = (1. - rto) * recall(irec)%hd(time%day,time%yrs)
