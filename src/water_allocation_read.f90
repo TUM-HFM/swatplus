@@ -134,8 +134,9 @@
               end do
             end if
             
-            !! for municipal and divert demands, can use recall for daily, monthly, or annual withdrawals
-            if (wallo(iwro)%dmd(i)%ob_typ == "muni" .or. wallo(iwro)%dmd(i)%ob_typ == "divert") then
+            !! for municipal, divert, and reservoir demands, can use recall for daily, monthly, or annual withdrawals
+            if (wallo(iwro)%dmd(i)%ob_typ == "muni" .or. wallo(iwro)%dmd(i)%ob_typ == "divert" .or. &
+                wallo(iwro)%dmd(i)%ob_typ == "res") then
               if (wallo(iwro)%dmd(i)%withdr /= "ave_day") then
                 !! xwalk with recall database
                 do idb = 1, db_mx%dtbl_flo
