@@ -261,11 +261,73 @@ jobs:
           name: intel-${{ steps.build_exe.outputs.os }}
           path: ${{ steps.build_exe.outputs.exez }}
 
+##### Build Intel Windows Debug (for crash diagnostics)
+
+  build-intel-windows-debug:
+    name: Intel (ifx) Windows Debug
+    runs-on: windows-latest
+    needs:
+      - version
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: '${{ github.event.inputs.rev }}'
+
+      - name: Install Compiler
+        uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: intel
+          version: '2024.1'
+
+      - name: Download version
+        uses: actions/download-artifact@v6
+        with:
+          name: release_tag
+
+      - name: Build SWAT+ (Debug)
+        id: build_exe
+        run: |
+          RELEASE_VERSION=`cat v.txt`
+          e="build/swatplus-*.exe"
+
+          cmake -B build -G "MinGW Makefiles" \
+            -D CMAKE_Fortran_COMPILER="C:\Program Files (x86)\Intel\oneAPI\compiler\2024.1\bin\${{ env.FC }}.exe" \
+            -D TAG=$RELEASE_VERSION \
+            -D CMAKE_BUILD_TYPE=Debug
+
+          cmake --build build --parallel 4
+
+          exebase=`basename -s .exe build/swatplus-*`
+          exez="${exebase}.zip"
+          exe=`ls $e`
+
+          echo "exe=$exe" >> $GITHUB_OUTPUT
+          echo "exez=$exez" >> $GITHUB_OUTPUT
+
+          ls -hl build/swatplus-*
+          file build/swatplus-*
+        shell: bash
+
+      - name: zip
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: ${{ steps.build_exe.outputs.exe }}
+          dest: ${{ steps.build_exe.outputs.exez }}
+
+      - name: upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: intel-Windows-debug
+          path: ${{ steps.build_exe.outputs.exez }}
+
 ##### Create a new release with all zip files
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [ build-gnu, build-intel ]
+    needs: [ build-gnu, build-intel, build-intel-windows-debug ]
 
     steps:
     - name: Download GNU Linux
@@ -298,6 +360,11 @@ jobs:
       uses: actions/download-artifact@v6
       with:
         name: intel-macOS
+
+    - name: Download Intel Windows Debug
+      uses: actions/download-artifact@v6
+      with:
+        name: intel-Windows-debug
 
     - name: Download version
       uses: actions/download-artifact@v6
@@ -333,7 +400,10 @@ jobs:
           | `swatplus-*-gcc-lin*` | Linux | ✅ No installation needed |
           | `swatplus-*-ifx-lin*` | Linux | ✅ No installation needed |
           | `swatplus-*-gcc-mac*` | macOS | ✅ No installation needed |
+          | `swatplus-*-ifx-win*-Dbg*` | Windows | 🔍 Debug only — slow, reports exact crash location |
 
           **Windows Intel users:** Download the Intel Redistributable from [Intel's website](https://www.intel.com/content/www/us/en/developer/articles/tool/compilers-redistributable-libraries-by-version.html) before running.
+
+          **Crash on Windows?** Use the `-Dbg` binary — it will print the exact file and line number.
 
 
