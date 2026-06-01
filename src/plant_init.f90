@@ -78,6 +78,9 @@
             deallocate (pcom(j)%plstr) 
             deallocate (pcom(j)%plcur) 
             deallocate (rsd1(j)%tot)
+            deallocate (rsd1(j)%meta)
+            deallocate (rsd1(j)%str)
+            deallocate (rsd1(j)%lignin)
           end if
         
         pcom(j)%npl = pcomdb(icom)%plants_com
