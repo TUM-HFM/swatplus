@@ -300,9 +300,9 @@ jobs:
 
           cmake --build build --parallel 4
 
-          exebase=`basename -s .exe build/swatplus-*`
-          exez="${exebase}.zip"
           exe=`ls $e`
+          exebase=`basename -s .exe $exe`
+          exez="${exebase}.zip"
 
           echo "exe=$exe" >> $GITHUB_OUTPUT
           echo "exez=$exez" >> $GITHUB_OUTPUT
