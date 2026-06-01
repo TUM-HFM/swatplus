@@ -1,0 +1,163 @@
+# Windows-only test build — no release created.
+# Use this to iterate on Windows executable fixes without the PR → tag → release cycle.
+# Artifacts (zips + PE header log) are available on the Actions run page for 90 days.
+
+name: Windows Test Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      rev:
+        description: 'branch, tag, or SHA to build'
+        required: true
+        default: 'HFM/61.0.2-dev'
+
+permissions:
+  contents: read
+
+jobs:
+
+  version:
+    name: Version
+    runs-on: ubuntu-latest
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v5
+       with:
+         ref: '${{ github.event.inputs.rev }}'
+         fetch-tags: true
+         fetch-depth: 0
+     - name: Get SWAT+ version
+       run: |
+          V=`git describe --tags`
+          echo $V
+          echo $V >v.txt
+     - name: upload
+       uses: actions/upload-artifact@v6
+       with:
+         name: release_tag
+         path: v.txt
+
+  build-gnu-windows:
+    name: GCC Windows
+    runs-on: windows-latest
+    needs: version
+
+    steps:
+      - name: Install Compiler
+        uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: gcc
+          version: 13
+
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: '${{ github.event.inputs.rev }}'
+
+      - name: Download version
+        uses: actions/download-artifact@v6
+        with:
+          name: release_tag
+
+      - name: Build SWAT+
+        id: build_exe
+        run: |
+          RELEASE_VERSION=`cat v.txt`
+          e="build/swatplus-*.exe"
+
+          cmake -B build -G "MinGW Makefiles" \
+              -D CMAKE_Fortran_COMPILER=${{ env.FC }} \
+              -D TAG=$RELEASE_VERSION \
+              -D CMAKE_BUILD_TYPE=Release
+
+          cmake --build build --parallel 4
+
+          exebase=`basename -s .exe build/swatplus-*`
+          exez="${exebase}.zip"
+          exe=`ls $e`
+
+          echo "exe=$exe" >> $GITHUB_OUTPUT
+          echo "exez=$exez" >> $GITHUB_OUTPUT
+
+          ls -hl build/swatplus-*
+          file build/swatplus-*
+
+          echo "--- PE header stack size ---"
+          objdump -p $exe | grep -i "SizeOfStack\|stack"
+        shell: bash
+
+      - name: zip
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: ${{ steps.build_exe.outputs.exe }}
+          dest: ${{ steps.build_exe.outputs.exez }}
+
+      - name: upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: gnu-Windows-test
+          path: ${{ steps.build_exe.outputs.exez }}
+
+  build-intel-windows:
+    name: Intel (ifx) Windows
+    runs-on: windows-latest
+    needs: version
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          ref: '${{ github.event.inputs.rev }}'
+
+      - name: Install Compiler
+        uses: fortran-lang/setup-fortran@v1
+        id: setup-fortran
+        with:
+          compiler: intel
+          version: '2024.1'
+
+      - name: Download version
+        uses: actions/download-artifact@v6
+        with:
+          name: release_tag
+
+      - name: Build SWAT+
+        id: build_exe
+        run: |
+          RELEASE_VERSION=`cat v.txt`
+          e="build/swatplus-*.exe"
+
+          cmake -B build -G "MinGW Makefiles" \
+            -D CMAKE_Fortran_COMPILER="C:\Program Files (x86)\Intel\oneAPI\compiler\2024.1\bin\${{ env.FC }}.exe" \
+            -D TAG=$RELEASE_VERSION \
+            -D CMAKE_BUILD_TYPE=Release
+
+          cmake --build build --parallel 4
+
+          exebase=`basename -s .exe build/swatplus-*`
+          exez="${exebase}.zip"
+          exe=`ls $e`
+
+          echo "exe=$exe" >> $GITHUB_OUTPUT
+          echo "exez=$exez" >> $GITHUB_OUTPUT
+
+          ls -hl build/swatplus-*
+          file build/swatplus-*
+
+          echo "--- PE header stack size ---"
+          objdump -p $exe | grep -i "SizeOfStack\|stack"
+        shell: bash
+
+      - name: zip
+        uses: vimtor/action-zip@v1.2
+        with:
+          files: ${{ steps.build_exe.outputs.exe }}
+          dest: ${{ steps.build_exe.outputs.exez }}
+
+      - name: upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: intel-Windows-test
+          path: ${{ steps.build_exe.outputs.exez }}
