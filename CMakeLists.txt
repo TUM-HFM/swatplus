@@ -52,13 +52,13 @@ if (UNIX)
     endif()
 elseif(WIN32)
     if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
-        set(fdialect        "/free /traceback /Qdiag-disable:all /Qdiag-disable:remarks /heap-arrays /F16777216")
+        set(fdialect        "/free /traceback /Qdiag-disable:all /Qdiag-disable:remarks /heap-arrays")
         set(fdebug          "/warn:all /fpe0")
         set(frelease        "/O")
         set(FFC             "ifo")
         link_libraries("-static")
     elseif(CMAKE_Fortran_COMPILER_ID STREQUAL IntelLLVM)
-        set(fdialect        "/free /traceback /heap-arrays /F16777216")
+        set(fdialect        "/free /traceback /heap-arrays")
         set(fdebug          "/warn:all /fpe0")
         set(frelease        "/O")
         set(FFC             "ifx")
@@ -68,7 +68,7 @@ elseif(WIN32)
         set(fdebug          "-Wall -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow -fno-unsafe-math-optimizations -frounding-math -fsignaling-nans")
         set(FFC             "gcc")
         set(frelease        "-O")
-        link_libraries("-static -static-libgfortran -static-libgcc")
+        link_libraries("-static -static-libgfortran -static-libgcc -Wl,--stack,16777216")
     endif()
 endif()
 
@@ -134,6 +134,15 @@ endif()
 
 file(GLOB sources src/*.f90)
 add_executable(${SWATPLUS_EXE} ${sources})
+
+# Windows Intel: set stack to 16 MB at link time via Intel Fortran's /link
+# prefix, which passes remaining arguments directly to link.exe. /STACK: is
+# a Microsoft linker flag; it must reach the linker, not the ifx compiler driver.
+if(WIN32 AND (CMAKE_Fortran_COMPILER_ID STREQUAL Intel OR
+              CMAKE_Fortran_COMPILER_ID STREQUAL IntelLLVM))
+    set_target_properties(${SWATPLUS_EXE} PROPERTIES
+        LINK_FLAGS "/link /STACK:16777216")
+endif()
 
 #############################################################################
 # Install
