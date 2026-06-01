@@ -135,6 +135,15 @@ endif()
 file(GLOB sources src/*.f90)
 add_executable(${SWATPLUS_EXE} ${sources})
 
+# Windows Intel: increase stack from 1 MB default to 16 MB.
+# Linux default is 8 MB and SWAT+ runs fine there; 16 MB gives headroom
+# for the slightly heavier Windows x64 ABI call frames.
+if(WIN32 AND (CMAKE_Fortran_COMPILER_ID STREQUAL Intel OR
+              CMAKE_Fortran_COMPILER_ID STREQUAL IntelLLVM))
+    set_target_properties(${SWATPLUS_EXE} PROPERTIES
+        LINK_FLAGS "/STACK:16777216")
+endif()
+
 #############################################################################
 # Install
 install(TARGETS ${SWATPLUS_EXE} DESTINATION RUNTIME DESTINATION ${PROJECT_SOURCE_DIR})
