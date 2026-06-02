@@ -161,7 +161,7 @@
               hgt_above = max(0., res_h - wet_ob(jres)%weir_hgt)    !m
               iweir = d_tbl%act_typ(iac)
               ht2%flo = ht2%flo + res_weir(iweir)%c * res_weir(iweir)%w * hgt_above ** res_weir(iweir)%k / nstep   !m3/s
-              ht2%flo = ht2%flo + max(0.,ht2%flo)
+              ht2%flo = max(0.,ht2%flo)
               
             case ("meas")
               !! measured outflow or release
