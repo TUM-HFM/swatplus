@@ -9,7 +9,9 @@
          
       character (len=80) :: titldum = ""  !             |title of file
       character (len=80) :: header = "" !             |header of file
+      character (len=500) :: line = ""  !             |buffer for backward-compatible read
       integer :: eof = 0                !             |end of file
+      integer :: ios = 0                !             |internal read status
       integer :: imax = 0               !             |determine max number for array (imax) and total number in file
       logical :: i_exist                !none         |check to determine if file exists
       integer :: ires = 0               !none         |counter
@@ -46,8 +48,9 @@
          
          !read (105,*,iostat=eof) titldum
          !backspace (105)
-         read (105,*,iostat=eof) res_hyddb(ires)
+         read (105,'(A)',iostat=eof) line
          if (eof < 0) exit
+         read (line,*,iostat=ios) res_hyddb(ires)
 
         if (res_hyddb(ires)%pvol + res_hyddb(ires)%evol > 0.) then
           if(res_hyddb(ires)%pvol <= 0) res_hyddb(ires)%pvol = 0.9 * res_hyddb(ires)%evol

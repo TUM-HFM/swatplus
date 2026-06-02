@@ -13,7 +13,7 @@
       implicit none
       
       integer :: ires = 0    !none          |counter
-      integer :: lnvol = 0   !              |
+      real :: lnvol = 0.     !              |
       real :: resdif = 0.    !              |
       integer :: i = 0       !none          |counter
       integer :: idat = 0    !none          |counter
@@ -34,31 +34,35 @@
         !! set initial weir height to principal depth - m
         res_ob(ires)%weir_hgt = res_ob(ires)%pvol / (res_ob(ires)%psa * 10000.)
         
-        !! use br1 as lag - then compute actual br1 (no option to input actual br1)
-        res_ob(ires)%lag_up = res_hyd(ires)%br1
-        res_ob(ires)%lag_down = res_hyd(ires)%br2
-        
+        res_ob(ires)%lag_up = res_hyd(ires)%lag_up
+        res_ob(ires)%lag_down = res_hyd(ires)%lag_down
+
         !! calculate shape parameters for surface area equation
-        resdif = res_hyd(ires)%evol - res_hyd(ires)%pvol
-        if ((res_hyd(ires)%esa - res_hyd(ires)%psa) > 0. .and. resdif > 0.) then
-          lnvol = Log10(res_ob(ires)%evol) - Log10(res_ob(ires)%pvol)
-          if (lnvol > 1.e-4) then
-            res_ob(ires)%br2 = (Log10(res_ob(ires)%esa) - Log10(res_ob(ires)%psa)) / lnvol
-          else  
-            res_ob(ires)%br2 = (Log10(res_ob(ires)%esa) - Log10(res_ob(ires)%psa)) / 0.001
-          end if
-          if (res_ob(ires)%br2 > 0.9) then
-            res_ob(ires)%br2 = 0.9
-            res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
-          else
-            res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(ires)%br2
-          end if  
+        if (res_hyd(ires)%br1 > 0. .and. res_hyd(ires)%br2 > 0.) then
+          res_ob(ires)%br1 = res_hyd(ires)%br1
+          res_ob(ires)%br2 = res_hyd(ires)%br2
         else
-          res_ob(ires)%br2 = 0.9
-          if (res_ob(ires)%pvol > 1.e-6) then
-            res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+          resdif = res_hyd(ires)%evol - res_hyd(ires)%pvol
+          if ((res_hyd(ires)%esa - res_hyd(ires)%psa) > 0. .and. resdif > 0.) then
+            lnvol = Log10(res_ob(ires)%evol) - Log10(res_ob(ires)%pvol)
+            if (lnvol > 1.e-4) then
+              res_ob(ires)%br2 = (Log10(res_ob(ires)%esa) - Log10(res_ob(ires)%psa)) / lnvol
+            else
+              res_ob(ires)%br2 = (Log10(res_ob(ires)%esa) - Log10(res_ob(ires)%psa)) / 0.001
+            end if
+            if (res_ob(ires)%br2 > 0.9) then
+              res_ob(ires)%br2 = 0.9
+              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+            else
+              res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(ires)%br2
+            end if
           else
-            res_ob(ires)%br1 = .1
+            res_ob(ires)%br2 = 0.9
+            if (res_ob(ires)%pvol > 1.e-6) then
+              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+            else
+              res_ob(ires)%br1 = .1
+            end if
           end if
         end if
         
