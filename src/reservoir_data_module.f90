@@ -73,8 +73,10 @@
                                   !                and converted to m^3)
         real :: k = .01           !mm/hr         |hydraulic conductivity of the res bottom
         real :: evrsv = .7        !none          |lake evap coeff
-        real :: br1 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
-        real :: br2 = 0.          !none          |vol-surface area coefficient for reservoirs (model estimates if zero)
+        real :: br1 = 0.          !none          |vol-surface area coefficient for reservoirs (computed if zero)
+        real :: br2 = 0.          !none          |vol-surface area exponent for reservoirs (computed if zero)
+        real :: lag_up   = 0.     !1/day         |outflow lag coefficient for increasing flows
+        real :: lag_down = 0.     !1/day         |outflow lag coefficient for decreasing flows
       end type reservoir_hyd_data
       type (reservoir_hyd_data), dimension(:), allocatable :: res_hyd
       type (reservoir_hyd_data), dimension(:), allocatable :: res_hyddb

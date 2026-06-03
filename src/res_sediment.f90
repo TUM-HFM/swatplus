@@ -11,10 +11,11 @@
       implicit none
 
       real :: trapres = 0.                  !              |
-      real :: velofl = 0.                   !              |  
+      real :: velofl = 0.                   !              |
       real :: sed_ppm = 0.
       real :: sil_ppm = 0.
       real :: cla_ppm = 0.
+      real :: stlr_factor = 0.
 
       if (wbody%flo < 1.e-6) then
         ! reservoir is empty
@@ -55,17 +56,15 @@
         
         !! compute change in sediment concentration due to settling 
         if (sed_ppm > wbody_prm%sed%nsed) then
-          wbody_prm%sed%sed_stlr = exp(-wbody_prm%sed%sed_stlr)
-          sed_ppm = (sed_ppm - wbody_prm%sed%nsed) * wbody_prm%sed%sed_stlr + wbody_prm%sed%nsed
+          stlr_factor = exp(-wbody_prm%sed%sed_stlr)
+          sed_ppm = (sed_ppm - wbody_prm%sed%nsed) * stlr_factor + wbody_prm%sed%nsed
           sed_ppm = Max (sed_ppm, wbody_prm%sed%nsed)
-          !wbody%sed = sed_ppm * wbody%flo / 1000000.      ! ppm -> t
-          ht2%sed = sed_ppm * ht2%flo / 1000000.
-          wbody%sed = wbody%sed - ht2%sed
-          
-          sil_ppm = (sil_ppm - wbody_prm%sed%nsed) * wbody_prm%sed%sed_stlr + wbody_prm%sed%nsed
+          wbody%sed = sed_ppm * wbody%flo / 1000000.      ! ppm -> t
+
+          sil_ppm = (sil_ppm - wbody_prm%sed%nsed) * stlr_factor + wbody_prm%sed%nsed
           wbody%sil = sil_ppm * wbody%flo / 1000000.      ! ppm -> t
-          
-          cla_ppm = (cla_ppm - wbody_prm%sed%nsed) * wbody_prm%sed%sed_stlr + wbody_prm%sed%nsed
+
+          cla_ppm = (cla_ppm - wbody_prm%sed%nsed) * stlr_factor + wbody_prm%sed%nsed
           wbody%cla = cla_ppm * wbody%flo / 1000000.      ! ppm -> t
 
           !! assume all sand aggregates and gravel settles

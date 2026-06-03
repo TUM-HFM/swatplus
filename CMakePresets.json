@@ -66,6 +66,38 @@
         "CMAKE_INSTALL_PREFIX": "${sourceDir}/../swatplus-build-linux-gfortran-release",
         "CMAKE_Fortran_COMPILER": "gfortran"
     }
+},
+{
+    "name": "ifx_debug_linux",
+    "displayName": "ifx debug version (Linux, external build dir)",
+    "description": "Builds an ifx debug executable for Linux outside the source tree",
+    "binaryDir": "${sourceDir}/../swatplus-build-linux-ifx-debug",
+    "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+    },
+    "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../swatplus-build-linux-ifx-debug",
+        "CMAKE_Fortran_COMPILER": "ifx"
+    }
+},
+{
+    "name": "gfortran_debug_linux",
+    "displayName": "gfortran debug version (Linux, external build dir)",
+    "description": "Builds a gfortran debug executable for Linux outside the source tree",
+    "binaryDir": "${sourceDir}/../swatplus-build-linux-gfortran-debug",
+    "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Linux"
+    },
+    "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/../swatplus-build-linux-gfortran-debug",
+        "CMAKE_Fortran_COMPILER": "gfortran"
+    }
 }
     ]
 }
