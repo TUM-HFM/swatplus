@@ -52,14 +52,14 @@
             end if
             if (res_ob(ires)%br2 > 0.9) then
               res_ob(ires)%br2 = 0.9
-              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+              res_ob(ires)%br1 = res_ob(ires)%psa / (res_ob(ires)%pvol ** 0.9)
             else
-              res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(ires)%br2
+              res_ob(ires)%br1 = res_ob(ires)%esa / (res_ob(ires)%evol ** res_ob(ires)%br2)
             end if
           else
             res_ob(ires)%br2 = 0.9
             if (res_ob(ires)%pvol > 1.e-6) then
-              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+              res_ob(ires)%br1 = res_ob(ires)%psa / (res_ob(ires)%pvol ** 0.9)
             else
               res_ob(ires)%br1 = .1
             end if
