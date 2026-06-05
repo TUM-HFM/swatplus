@@ -20,6 +20,8 @@
       allocate (res_hyd(0:mres))
       allocate (res_om_init(0:mres))
       allocate (res_ob(0:mres))
+      allocate (res_wallo_in(mres))
+      res_wallo_in = 0.
       allocate (res_in_d(mres))
       allocate (res_in_m(mres))
       allocate (res_in_y(mres))

@@ -69,10 +69,19 @@
             case ("inflo_rate")
               !! JK: added functionality to use const2 to reduce/increase inflow variable - const is max release
               ht2%flo = ht2%flo + max (ht1%flo + dtbl_res(id)%act(iac)%const2 * 86400., dtbl_res(id)%act(iac)%const * 86400.)
-              
+
+            case ("inflo_rate_total")
+              !! inflo_rate including water allocated to this reservoir from wallo_transfer
+              ht2%flo = ht2%flo + max (ht1%flo + res_wallo_in(jres) + dtbl_res(id)%act(iac)%const2 * 86400., &
+                                       dtbl_res(id)%act(iac)%const * 86400.)
+
             case ("inflo_frac")
               !! release at fraction of inflow
               ht2%flo = ht2%flo + ht1%flo * dtbl_res(id)%act(iac)%const
+
+            case ("inflo_frac_total")
+              !! inflo_frac including water allocated to this reservoir from wallo_transfer
+              ht2%flo = ht2%flo + (ht1%flo + res_wallo_in(jres)) * dtbl_res(id)%act(iac)%const
               
             case ("ab_emer")
               !! release all volume above emergency

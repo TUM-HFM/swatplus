@@ -111,6 +111,7 @@
       type (hyd_output), dimension(:),allocatable :: ch_stor_a
       type (hyd_output) :: chaz
       
+      real, dimension(:), allocatable, save :: res_wallo_in
       type (hyd_output), dimension(:), allocatable, save :: res_in_d
       type (hyd_output), dimension(:), allocatable, save :: res_in_m
       type (hyd_output), dimension(:), allocatable, save :: res_in_y
