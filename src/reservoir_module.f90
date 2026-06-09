@@ -31,6 +31,8 @@
         real :: prev_flo = 0                !m3     !previous days flow to smooth outflows
         real :: lag_up = 0                  !       !lag parameter for increasing outflow - prevents sudden jumps
         real :: lag_down = 0                !       !lag parameter for decreasing outflow - prevents sudden drops
+        integer :: area_type = 0            !none   !0=power law, 1=linear
+        real    :: area_min  = 0.           !ha     !minimum surface area (dead pool floor)
         real, dimension (:), allocatable :: kd      !           |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
         real, dimension (:), allocatable :: aq_mix  ! m/day     |aquatic mixing velocity (diffusion/dispersion)-using mol_wt
       end type reservoir          

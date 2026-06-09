@@ -50,7 +50,33 @@
          !backspace (105)
          read (105,'(A)',iostat=eof) line
          if (eof < 0) exit
+         !! tier 1: 15-field new format (all fields)
          read (line,*,iostat=ios) res_hyddb(ires)
+         if (ios /= 0) then
+           !! tier 2: 13-field format (no area_type, no area_min)
+           read (line,*,iostat=ios) res_hyddb(ires)%name,                    &
+             res_hyddb(ires)%iyres,  res_hyddb(ires)%mores,                  &
+             res_hyddb(ires)%psa,    res_hyddb(ires)%pvol,                   &
+             res_hyddb(ires)%esa,    res_hyddb(ires)%evol,                   &
+             res_hyddb(ires)%k,      res_hyddb(ires)%evrsv,                  &
+             res_hyddb(ires)%br1,    res_hyddb(ires)%br2,                    &
+             res_hyddb(ires)%lag_up, res_hyddb(ires)%lag_down
+           res_hyddb(ires)%area_type = 0
+           res_hyddb(ires)%area_min  = 0.
+         end if
+         if (ios /= 0) then
+           !! tier 3: 11-field old format (no lag, no area_type, no area_min)
+           read (line,*,iostat=ios) res_hyddb(ires)%name,                    &
+             res_hyddb(ires)%iyres,  res_hyddb(ires)%mores,                  &
+             res_hyddb(ires)%psa,    res_hyddb(ires)%pvol,                   &
+             res_hyddb(ires)%esa,    res_hyddb(ires)%evol,                   &
+             res_hyddb(ires)%k,      res_hyddb(ires)%evrsv,                  &
+             res_hyddb(ires)%br1,    res_hyddb(ires)%br2
+           res_hyddb(ires)%lag_up   = 0.
+           res_hyddb(ires)%lag_down = 0.
+           res_hyddb(ires)%area_type = 0
+           res_hyddb(ires)%area_min  = 0.
+         end if
 
         if (res_hyddb(ires)%pvol + res_hyddb(ires)%evol > 0.) then
           if(res_hyddb(ires)%pvol <= 0) res_hyddb(ires)%pvol = 0.9 * res_hyddb(ires)%evol

@@ -122,11 +122,7 @@
         end if
 
         !! update surface area
-        if (res(jres)%flo > 0.) then
-          res_wat_d(jres)%area_ha = res_ob(jres)%br1 * res(jres)%flo ** res_ob(jres)%br2
-        else
-          res_wat_d(jres)%area_ha = 0.
-        end if
+        call res_area_calc(res(jres)%flo, res_ob(jres), res_wat_d(jres)%area_ha)
 
         !! subtract sediment leaving from reservoir
         !res(jres)%sed = max (0., res(jres)%sed - ht2%sed)
