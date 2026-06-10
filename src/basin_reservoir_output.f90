@@ -24,6 +24,8 @@
           res_in_d(ires) = resmz
           bres_out_d = bres_out_d + res_out_d(ires)
           res_out_d(ires) = resmz
+          res_wallo_in_d(ires)  = 0.
+          res_wallo_out_d(ires) = 0.
           bres_wat_d = bres_wat_d + res_wat_d(ires)
           !res_wat_d(ires) = wbodz
         end do

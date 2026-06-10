@@ -112,6 +112,14 @@
       type (hyd_output) :: chaz
       
       real, dimension(:), allocatable, save :: res_wallo_in
+      real, dimension(:), allocatable, save :: res_wallo_in_d
+      real, dimension(:), allocatable, save :: res_wallo_in_m
+      real, dimension(:), allocatable, save :: res_wallo_in_y
+      real, dimension(:), allocatable, save :: res_wallo_in_a
+      real, dimension(:), allocatable, save :: res_wallo_out_d
+      real, dimension(:), allocatable, save :: res_wallo_out_m
+      real, dimension(:), allocatable, save :: res_wallo_out_y
+      real, dimension(:), allocatable, save :: res_wallo_out_a
       type (hyd_output), dimension(:), allocatable, save :: res_in_d
       type (hyd_output), dimension(:), allocatable, save :: res_in_m
       type (hyd_output), dimension(:), allocatable, save :: res_in_y
