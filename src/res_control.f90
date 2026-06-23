@@ -37,7 +37,7 @@
         !! adjust precip and temperature for elevation using lapse rates
         w = wst(iwst)%weat
         if (bsn_cc%lapse == 1) then
-          if (wst(iwst)%weat%precip > 0.) then
+          if (wst(iwst)%weat%precip > 0.01) then
             wst(iwst)%weat%precip = wst(iwst)%weat%precip + ob(iob)%plaps
             wst(iwst)%weat%precip = max (0., wst(iwst)%weat%precip)
           end if
@@ -87,8 +87,9 @@
 	      ictbl = res_dat(idat)%release                              !! Osvaldo
           call res_rel_conds (ictbl, res(jres)%flo, ht1%flo, 0.)
           
-        endif 
-        
+        endif
+        res_wallo_in(jres) = 0.
+
         !! calculate water balance for day
         res_wat_d(jres)%evap = 10. * res_hyd(jres)%evrsv * wst(iwst)%weat%pet * res_wat_d(jres)%area_ha
         res_wat_d(jres)%precip = 10. * wst(iwst)%weat%precip * res_wat_d(jres)%area_ha
@@ -121,11 +122,7 @@
         end if
 
         !! update surface area
-        if (res(jres)%flo > 0.) then
-          res_wat_d(jres)%area_ha = res_ob(jres)%br1 * res(jres)%flo ** res_ob(jres)%br2
-        else
-          res_wat_d(jres)%area_ha = 0.
-        end if
+        call res_area_calc(res(jres)%flo, res_ob(jres), res_wat_d(jres)%area_ha)
 
         !! subtract sediment leaving from reservoir
         !res(jres)%sed = max (0., res(jres)%sed - ht2%sed)

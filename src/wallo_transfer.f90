@@ -29,6 +29,9 @@
         res(j) = res(j) + wallo(iwallo)%dmd(idmd)%hd
         if (time%yrs > pco%nyskip) &
           res_in_d(j) = res_in_d(j) + wallo(iwallo)%dmd(idmd)%hd
+        res_wallo_in(j) = res_wallo_in(j) + wallo(iwallo)%dmd(idmd)%hd%flo
+        if (time%yrs > pco%nyskip) &
+          res_wallo_in_d(j) = res_wallo_in_d(j) + wallo(iwallo)%dmd(idmd)%hd%flo
             
       !! aquifer source
       case ("aqu") 

@@ -5,7 +5,7 @@
       use aquifer_module
       use reservoir_module
       use time_module
-      use basin_module, only : bsn_cc
+      use basin_module, only : bsn_cc, pco
       
       implicit none 
 
@@ -61,6 +61,8 @@
             ht5 = rto * res(j)
             res(j) = (1. - rto) * res(j)
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
+            if (time%yrs > pco%nyskip) &
+              res_wallo_out_d(j) = res_wallo_out_d(j) + ht5%flo
           else
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
           end if

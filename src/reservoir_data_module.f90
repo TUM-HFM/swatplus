@@ -77,6 +77,8 @@
         real :: br2 = 0.          !none          |vol-surface area exponent for reservoirs (computed if zero)
         real :: lag_up   = 0.     !1/day         |outflow lag coefficient for increasing flows
         real :: lag_down = 0.     !1/day         |outflow lag coefficient for decreasing flows
+        integer :: area_type = 0  !none          |0=power law A=max(area_min,br1*V^br2), 1=linear A=max(area_min,br1+br2*V)
+        real    :: area_min  = 0. !ha            |minimum surface area floor (dead pool); 0 = no floor
       end type reservoir_hyd_data
       type (reservoir_hyd_data), dimension(:), allocatable :: res_hyd
       type (reservoir_hyd_data), dimension(:), allocatable :: res_hyddb

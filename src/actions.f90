@@ -734,8 +734,23 @@
               if (d_tbl%act(iac)%file_pointer == "evol") then
                 dmd_m3 = Max(0., res(j)%flo - d_tbl%act(iac)%const * res_ob(j)%evol)
               end if
+            !! demand is to release volume above base spread over const2 days
+            case ("release_days")
+              select case (d_tbl%act(iac)%file_pointer)
+              case ("null")
+                dmd_m3 = Max(0., res(j)%flo / d_tbl%act(iac)%const2)
+              case ("pvol")
+                dmd_m3 = Max(0., (res(j)%flo - d_tbl%act(iac)%const * res_ob(j)%pvol) &
+                                  / d_tbl%act(iac)%const2)
+              case ("evol")
+                dmd_m3 = Max(0., (res(j)%flo - d_tbl%act(iac)%const * res_ob(j)%evol) &
+                                  / d_tbl%act(iac)%const2)
+              end select
+            !! demand is a fixed daily rate regardless of storage
+            case ("rate")
+              dmd_m3 = d_tbl%act(iac)%const * 86400.
             end select
-                                                                        
+
           !flow control for water allocation - needs to be modified***
           case ("flow_control") !! set flow fractions in con file
             ! ob_num is the object number of the current channel

@@ -34,14 +34,17 @@
         !! set initial weir height to principal depth - m
         res_ob(ires)%weir_hgt = res_ob(ires)%pvol / (res_ob(ires)%psa * 10000.)
         
-        res_ob(ires)%lag_up = res_hyd(ires)%lag_up
+        res_ob(ires)%lag_up   = res_hyd(ires)%lag_up
         res_ob(ires)%lag_down = res_hyd(ires)%lag_down
+        res_ob(ires)%area_type = res_hyd(ires)%area_type
+        res_ob(ires)%area_min  = res_hyd(ires)%area_min
 
         !! calculate shape parameters for surface area equation
-        if (res_hyd(ires)%br1 > 0. .and. res_hyd(ires)%br2 > 0.) then
+        if (res_hyd(ires)%br1 /= 0. .or. res_hyd(ires)%br2 /= 0.) then
           res_ob(ires)%br1 = res_hyd(ires)%br1
           res_ob(ires)%br2 = res_hyd(ires)%br2
-        else
+        else if (res_ob(ires)%area_type == 0) then
+          !! power law auto-compute from two-point log-log fit
           resdif = res_hyd(ires)%evol - res_hyd(ires)%pvol
           if ((res_hyd(ires)%esa - res_hyd(ires)%psa) > 0. .and. resdif > 0.) then
             lnvol = Log10(res_ob(ires)%evol) - Log10(res_ob(ires)%pvol)
@@ -50,19 +53,33 @@
             else
               res_ob(ires)%br2 = (Log10(res_ob(ires)%esa) - Log10(res_ob(ires)%psa)) / 0.001
             end if
-            if (res_ob(ires)%br2 > 0.9) then
+            !! br2 > 5 signals degenerate geometry (pvol ≈ evol); risks single-precision
+            !! overflow; use area_type=1 (linear) for such reservoirs
+            if (res_ob(ires)%br2 > 5.0) then
               res_ob(ires)%br2 = 0.9
-              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+              res_ob(ires)%br1 = res_ob(ires)%psa / (res_ob(ires)%pvol ** 0.9)
             else
-              res_ob(ires)%br1 = (res_ob(ires)%esa / res_ob(ires)%evol) ** res_ob(ires)%br2
+              res_ob(ires)%br1 = res_ob(ires)%esa / (res_ob(ires)%evol ** res_ob(ires)%br2)
             end if
           else
+            !! degenerate geometry (esa <= psa or evol <= pvol)
             res_ob(ires)%br2 = 0.9
             if (res_ob(ires)%pvol > 1.e-6) then
-              res_ob(ires)%br1 = (res_ob(ires)%psa / res_ob(ires)%pvol) ** 0.9
+              res_ob(ires)%br1 = res_ob(ires)%psa / (res_ob(ires)%pvol ** 0.9)
             else
               res_ob(ires)%br1 = .1
             end if
+          end if
+        else if (res_ob(ires)%area_type == 1) then
+          !! linear auto-compute: A = br1 + br2*V anchored at (pvol,psa) and (evol,esa)
+          if (res_ob(ires)%evol - res_ob(ires)%pvol > 1.e-6) then
+            res_ob(ires)%br2 = (res_ob(ires)%esa - res_ob(ires)%psa) /   &
+                               (res_ob(ires)%evol - res_ob(ires)%pvol)
+            res_ob(ires)%br1 = res_ob(ires)%psa - res_ob(ires)%br2 * res_ob(ires)%pvol
+          else
+            !! degenerate: pvol ≈ evol → constant area at psa
+            res_ob(ires)%br1 = res_ob(ires)%psa
+            res_ob(ires)%br2 = 0.
           end if
         end if
         
@@ -101,8 +118,8 @@
             res_benthic(ires)%path(ipath) = path_water_ini(init)%benthic(ipath)
           end do
                         
-          !! calculate initial surface area       
-          res_wat_d(ires)%area_ha = res_ob(ires)%br1 * res(ires)%flo ** res_ob(ires)%br2
+          !! calculate initial surface area
+          call res_area_calc(res(ires)%flo, res_ob(ires), res_wat_d(ires)%area_ha)
 
           !! initialize salts in reservoir water, from database file (salt.res)
           !rtb salt

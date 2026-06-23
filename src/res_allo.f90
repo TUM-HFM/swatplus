@@ -20,6 +20,16 @@
       allocate (res_hyd(0:mres))
       allocate (res_om_init(0:mres))
       allocate (res_ob(0:mres))
+      allocate (res_wallo_in(mres))
+      res_wallo_in = 0.
+      allocate (res_wallo_in_d(mres));  res_wallo_in_d  = 0.
+      allocate (res_wallo_in_m(mres));  res_wallo_in_m  = 0.
+      allocate (res_wallo_in_y(mres));  res_wallo_in_y  = 0.
+      allocate (res_wallo_in_a(mres));  res_wallo_in_a  = 0.
+      allocate (res_wallo_out_d(mres)); res_wallo_out_d = 0.
+      allocate (res_wallo_out_m(mres)); res_wallo_out_m = 0.
+      allocate (res_wallo_out_y(mres)); res_wallo_out_y = 0.
+      allocate (res_wallo_out_a(mres)); res_wallo_out_a = 0.
       allocate (res_in_d(mres))
       allocate (res_in_m(mres))
       allocate (res_in_y(mres))
