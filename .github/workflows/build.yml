@@ -190,6 +190,12 @@ jobs:
         with:
           name: release_tag
 
+      - name: Setup MSVC (Windows Intel only)
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Build SWAT+
         id: build_exe
         run: |
@@ -286,6 +292,11 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: release_tag
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
 
       - name: Build SWAT+ (Debug)
         id: build_exe
