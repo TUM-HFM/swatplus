@@ -316,7 +316,13 @@
       
       end if        ! ht1%flo > 0.
       
-      !rtb hydrograph separation
+      !rtb hydrograph separation - daily storage coefficient, same documented
+      !! formula as ch_rtmusk (SC = 2*dt/(2*ttime+dt), ttime = (in2+out1)/2)
+      det = 24.
+      rttime = (ch_rcurv(jrch)%in2%ttime + ch_rcurv(jrch)%out1%ttime) / 2.
+      scoef = 2. * det / (ch_rcurv(jrch)%in2%ttime + ch_rcurv(jrch)%out1%ttime + det)
+      scoef = Max(0., Min(scoef, 1.))
+      frac = 1. - scoef
       if (rttime > det) then      ! ht1 = incoming + storage
         !! travel time > timestep -- then all incoming is stored and frac of stored is routed
         hdsep2%flo_surq = scoef * ch_stor_hdsep(ich)%flo_surq
