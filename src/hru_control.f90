@@ -677,12 +677,13 @@
         if (sp_ob%gwflow > 0) then
           gwflow_perc(j) = sepbtm(j)
         end if
-        !! add evap from impounded water (wetland) to et and esoil
-        hwb_d(j)%et = etday + hru(j)%water_evap
+        !! evap from impounded water (wetland) is already included in etday/es_day
+        !! via the shared esleft budget in et_act.f90 - do not add water_evap again here
+        hwb_d(j)%et = etday
         hwb_d(j)%ecanopy = canev
         hwb_d(j)%eplant = ep_day
-        hwb_d(j)%esoil = es_day + hru(j)%water_evap 
-        hwb_d(j)%wet_evap = hru(j)%water_evap 
+        hwb_d(j)%esoil = es_day
+        hwb_d(j)%wet_evap = hru(j)%water_evap
         hwb_d(j)%wet_out = wet_outflow
         hwb_d(j)%wet_stor = wet(j)%flo / (10. * hru(j)%area_ha)
         hwb_d(j)%surq_cont = surfq(j)

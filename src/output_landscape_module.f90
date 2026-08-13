@@ -334,9 +334,9 @@
         character (len=12) :: laglatq    =  "     laglatq"
         character (len=12) :: lagsatex   =  "    lagsatex"
         character (len=12) :: wet_evap   =  "    wet_evap"
-        character (len=12) :: wet_oflo   =  "    wet_oflo"
+        character (len=12) :: wet_out    =  "     wet_out"
         character (len=12) :: wet_stor   =  "    wet_stor"
-      end type output_waterbal_header      
+      end type output_waterbal_header
       type (output_waterbal_header) :: wb_hdr
       
       type output_waterbal_header_units
@@ -387,7 +387,7 @@
         character (len=12) :: laglatq    =  "          mm"
         character (len=12) :: lagsatex   =  "          mm"
         character (len=12) :: wet_evap   =  "          mm"
-        character (len=12) :: wet_oflo   =  "          mm"
+        character (len=12) :: wet_out    =  "          mm"
         character (len=12) :: wet_stor   =  "          mm"
       end type output_waterbal_header_units      
       type (output_waterbal_header_units) :: wb_hdr_units
