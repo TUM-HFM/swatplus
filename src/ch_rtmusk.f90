@@ -204,7 +204,6 @@
       if (ch_stor(jrch)%flo > 1.e-6) then
         !! mm/hr * km * m * 24. = m3
         trans_loss = sd_ch(jrch)%chk * sd_ch(jrch)%chl * rcurv%wet_perim * 24.
-        trans_loss = sd_ch(jrch)%chk * sd_ch(jrch)%chl * sd_ch(jrch)%chw * 24.
         trans_loss = Min(trans_loss, ch_stor(jrch)%flo)
         !! subtract transmission loses from outflow
         rto = trans_loss / ch_stor(jrch)%flo
