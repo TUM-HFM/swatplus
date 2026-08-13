@@ -14,7 +14,7 @@
 !!    snocov2      |none          |2nd shape parameter for snow cover equation
 !!                                |This parameter is determined by solving the
 !!                                |equation for 95% snow cover
-!!    snotmp       |deg C         |temperature of snow pack in HRU
+!!    hru(:)%sno_tmp |deg C       |temperature of snow pack in HRU
 !!    ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
 !!    ~ ~ ~ OUTGOING VARIABLES ~ ~ ~
@@ -42,12 +42,11 @@
       real :: rto_sno  = 0. !none       |ratio of current day's snow water to minimum amount needed to
                             !           |cover ground completely 
       real :: snocov = 0.   !none       |fraction of HRU area covered with snow
-      real :: snotmp = 0.   !deg C      |temperature of snow pack
 
       j = ihru
 
         !! estimate snow pack temperature
-        snotmp = snotmp * (1. - hru(j)%sno%timp) + w%tave * hru(j)%sno%timp
+        hru(j)%sno_tmp = hru(j)%sno_tmp * (1. - hru(j)%sno%timp) + w%tave * hru(j)%sno%timp
 
         if (w%tave <= hru(j)%sno%falltmp) then
           !! calculate snow fall
@@ -62,7 +61,7 @@
           !! adjust melt factor for time of year
           smfac = (hru(j)%sno%meltmx + hru(j)%sno%meltmn) / 2. + Sin((time%day - 81) / 58.09) *     &
                         (hru(j)%sno%meltmx - hru(j)%sno%meltmn) / 2.        !! 365/2pi = 58.09
-          snomlt = smfac * (((snotmp + w%tmax)/2.) - hru(j)%sno%melttmp)
+          snomlt = smfac * (((hru(j)%sno_tmp + w%tmax)/2.) - hru(j)%sno%melttmp)
 
           !! adjust for areal extent of snow cover
           if (hru(j)%sno_mm < hru(j)%sno%covmx) then
