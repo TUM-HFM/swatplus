@@ -15,9 +15,8 @@
       implicit none
       
       integer, intent (in) :: iihru     !none       |
-      integer :: iprop = 0              !           |  
+      integer :: iprop = 0              !           |
       integer :: init_om = 0
-      integer :: ihyd = 0               !none       |counter 
       integer :: init = 0               !           |
       integer :: iweir = 0              !           |
       integer :: icon = 0               !           |
@@ -31,9 +30,8 @@
         iweir = wet_ob(iihru)%iweir
         
         if (iprop > 0) then
-          ihyd = wet_dat(iprop)%hyd
           !if (wet_hyd(ihyd)%k > 0.) then
-            hru(iihru)%wet_hc = wet_hyd(ihyd)%k  !mm/hr
+            hru(iihru)%wet_hc = wet_hyd(iihru)%k  !mm/hr
           !else
           !  hru(iihru)%wet_hc = soil(iihru)%phys(1)%k
           !endif
@@ -111,16 +109,16 @@
           !! wetland on hru - solve quadratic to find new depth
           wet_wat_d(iihru)%area_ha = 0.
           if (wet(iihru)%flo > 0.) then
-            x1 = wet_hyd(ihyd)%bcoef ** 2 + 4. * wet_hyd(ihyd)%ccoef * (1. - wet(iihru)%flo / wet_ob(iihru)%pvol)
+            x1 = wet_hyd(iihru)%bcoef ** 2 + 4. * wet_hyd(iihru)%ccoef * (1. - wet(iihru)%flo / wet_ob(iihru)%pvol)
             if (x1 < 1.e-6) then
               wet_h = 0.
             else
-              wet_h1 = (-wet_hyd(ihyd)%bcoef - sqrt(x1)) / (2. * wet_hyd(ihyd)%ccoef)
-              wet_h = wet_h1 + wet_hyd(ihyd)%bcoef
+              wet_h1 = (-wet_hyd(iihru)%bcoef - sqrt(x1)) / (2. * wet_hyd(iihru)%ccoef)
+              wet_h = wet_h1 + wet_hyd(iihru)%bcoef
             end if
-            wet_fr = (1. + wet_hyd(ihyd)%acoef * wet_h)
+            wet_fr = (1. + wet_hyd(iihru)%acoef * wet_h)
             wet_fr = min(wet_fr,1.)
-            wet_wat_d(iihru)%area_ha = hru(iihru)%area_ha * wet_hyd(ihyd)%psa * wet_fr
+            wet_wat_d(iihru)%area_ha = hru(iihru)%area_ha * wet_hyd(iihru)%psa * wet_fr
           end if 
   
       end if

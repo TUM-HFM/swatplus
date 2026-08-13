@@ -76,9 +76,7 @@
       real :: sev_st = 0.        !mm H2O        |evaporation / soil water for no3 flux from layer 1 -> 2
       real :: cover = 0.         !kg/ha         |soil cover
       real :: wetvol_mm = 0.     !mm            |wetland water volume - average depth over hru
-      integer :: ly = 0          !none          |counter     
-      integer:: ires = 0  !Jaehak 2022
-      integer:: ihyd = 0  !Jaehak 2022
+      integer :: ly = 0          !none          |counter
 
       j = ihru
       pet = pet_day
@@ -86,7 +84,6 @@
       esd = 500.  !soil(j)%zmx
       etco = 0.80
       effnup = 0.05
-      ires= hru(j)%dbs%surf_stor !Jaehak 2022
 
 
 !! evaporate canopy storage first
@@ -138,9 +135,8 @@
 
         if (wet(j)%flo > 0.) then !wetlands water evaporation reduced by canopy Jaehak 2022
         
-          if (pcom(j)%lai_sum <= 4.0) then 
-            ihyd = wet_dat(ires)%hyd
-            es_max = wet_hyd(ihyd)%evrsv * (1.-pcom(j)%lai_sum / 4.) * pet !adapted from Sakaguchi et al. 2014
+          if (pcom(j)%lai_sum <= 4.0) then
+            es_max = wet_hyd(j)%evrsv * (1.-pcom(j)%lai_sum / 4.) * pet !adapted from Sakaguchi et al. 2014
           else
             es_max = 0.
           endif
