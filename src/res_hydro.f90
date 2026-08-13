@@ -169,7 +169,7 @@
               res_h = vol / (wbody_wb%area_ha * 10000.)     !m
               iweir = d_tbl%act_typ(iac)
               hgt_above = max(0., res_h - res_weir(iweir)%h)        !m
-              ht2%flo = ht2%flo + res_weir(iweir)%c * res_weir(iweir)%w * hgt_above ** res_weir(iweir)%k / nstep   !m3/s
+              ht2%flo = ht2%flo + res_weir(iweir)%c * res_weir(iweir)%w * hgt_above ** res_weir(iweir)%k * 86400. / nstep   !m3
               ht2%flo = max(0.,ht2%flo)
               
             case ("meas")
