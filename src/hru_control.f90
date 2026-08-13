@@ -581,13 +581,6 @@
           call smp_bmpfixed
         end if
 
-        !! ht2%flo is outflow from wetland or total saturation excess if no wetland
-        if(ht2%flo > 0.) then
-          wet_outflow = ht2%flo / hru(j)%area_ha / 10.   !! mm = m3/ha *ha/10000m2 *1000mm/m
-          qdr(j) = qdr(j) + wet_outflow
-          ht2%flo = 0.
-        end if
-        
         !! calculate amount of surface runoff during day (qday) and store the remainder
         call sq_surfst
         !qday =  surfq(j)
