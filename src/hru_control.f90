@@ -237,7 +237,7 @@
                   
         !!route overland flow across hru - add tile flow if not subirrigation or saturated buffer
         tile_fr_surf = 1.   !assume all tile goes overland until get saturated buffer dtbl
-        if (ob(icmd)%hin_sur%flo > 1.e-6) then
+        if (ob(icmd)%hin_sur%flo > 1.e-6 .or. ob(icmd)%hin_til%flo > 1.e-6) then
           !!route incoming surface runoff
           if (ires > 0) then
             !! add surface runon to wetland
