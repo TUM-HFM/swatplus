@@ -25,7 +25,6 @@
       integer :: ii = 0               !none       |counter
       integer :: ihru = 0             !none       |counter
       integer :: iprop = 0
-      integer :: ihyd = 0
       integer :: ielem = 0
       
       eof = 0
@@ -106,12 +105,11 @@
         !! reset volumes and surface areas
         iprop = hru(ihru)%dbs%surf_stor
         if (iprop > 0) then
-          ihyd = wet_dat(iprop)%hyd
           !! ha*mm*10. => m**3  - assume entire hru is wet and don't use fractional inputs (for simplicity)
-          wet_ob(ihru)%evol = hru(ihru)%area_ha * wet_hyd(ihyd)%edep * 10.  ! * wet_hyd(ihyd)%esa
-          wet_ob(ihru)%pvol = hru(ihru)%area_ha * wet_hyd(ihyd)%pdep * 10.  ! * wet_hyd(ihyd)%psa
-          wet_ob(ihru)%psa = wet_hyd(ihyd)%psa * hru(ihru)%area_ha 
-          wet_ob(ihru)%esa = wet_hyd(ihyd)%esa * hru(ihru)%area_ha
+          wet_ob(ihru)%evol = hru(ihru)%area_ha * wet_hyd(ihru)%edep * 10.  ! * wet_hyd(ihru)%esa
+          wet_ob(ihru)%pvol = hru(ihru)%area_ha * wet_hyd(ihru)%pdep * 10.  ! * wet_hyd(ihru)%psa
+          wet_ob(ihru)%psa = wet_hyd(ihru)%psa * hru(ihru)%area_ha
+          wet_ob(ihru)%esa = wet_hyd(ihru)%esa * hru(ihru)%area_ha
         end if
       end do
       

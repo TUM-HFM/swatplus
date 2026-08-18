@@ -237,7 +237,7 @@
                   
         !!route overland flow across hru - add tile flow if not subirrigation or saturated buffer
         tile_fr_surf = 1.   !assume all tile goes overland until get saturated buffer dtbl
-        if (ob(icmd)%hin_sur%flo > 1.e-6) then
+        if (ob(icmd)%hin_sur%flo > 1.e-6 .or. ob(icmd)%hin_til%flo > 1.e-6) then
           !!route incoming surface runoff
           if (ires > 0) then
             !! add surface runon to wetland
@@ -581,13 +581,6 @@
           call smp_bmpfixed
         end if
 
-        !! ht2%flo is outflow from wetland or total saturation excess if no wetland
-        if(ht2%flo > 0.) then
-          wet_outflow = ht2%flo / hru(j)%area_ha / 10.   !! mm = m3/ha *ha/10000m2 *1000mm/m
-          qdr(j) = qdr(j) + wet_outflow
-          ht2%flo = 0.
-        end if
-        
         !! calculate amount of surface runoff during day (qday) and store the remainder
         call sq_surfst
         !qday =  surfq(j)
@@ -684,12 +677,13 @@
         if (sp_ob%gwflow > 0) then
           gwflow_perc(j) = sepbtm(j)
         end if
-        !! add evap from impounded water (wetland) to et and esoil
-        hwb_d(j)%et = etday + hru(j)%water_evap
+        !! evap from impounded water (wetland) is already included in etday/es_day
+        !! via the shared esleft budget in et_act.f90 - do not add water_evap again here
+        hwb_d(j)%et = etday
         hwb_d(j)%ecanopy = canev
         hwb_d(j)%eplant = ep_day
-        hwb_d(j)%esoil = es_day + hru(j)%water_evap 
-        hwb_d(j)%wet_evap = hru(j)%water_evap 
+        hwb_d(j)%esoil = es_day
+        hwb_d(j)%wet_evap = hru(j)%water_evap
         hwb_d(j)%wet_out = wet_outflow
         hwb_d(j)%wet_stor = wet(j)%flo / (10. * hru(j)%area_ha)
         hwb_d(j)%surq_cont = surfq(j)

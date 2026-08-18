@@ -160,7 +160,7 @@
           else
 
             !! Variable Storage Coefficent method - sc=2*dt/(2*ttime+dt) - ttime=(in2+out1)/2
-            scoef = dthr / (ch_rcurv(jrch)%in2%ttime + ch_rcurv(jrch)%out1%ttime + dthr)
+            scoef = 2. * dthr / (ch_rcurv(jrch)%in2%ttime + ch_rcurv(jrch)%out1%ttime + dthr)
             scoef = Min (scoef, 1.)
             outflo = scoef * tot_stor(jrch)%flo
           end if
@@ -204,7 +204,6 @@
       if (ch_stor(jrch)%flo > 1.e-6) then
         !! mm/hr * km * m * 24. = m3
         trans_loss = sd_ch(jrch)%chk * sd_ch(jrch)%chl * rcurv%wet_perim * 24.
-        trans_loss = sd_ch(jrch)%chk * sd_ch(jrch)%chl * sd_ch(jrch)%chw * 24.
         trans_loss = Min(trans_loss, ch_stor(jrch)%flo)
         !! subtract transmission loses from outflow
         rto = trans_loss / ch_stor(jrch)%flo

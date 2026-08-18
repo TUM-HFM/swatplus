@@ -117,6 +117,11 @@
                   if (cs_db%num_tot > 0 .and. obcs_alloc(icmd).eq.1) then
                     obcs(icmd)%hin_lat(1) = obcs(icmd)%hin_lat(1) + frac_in * obcs(iob)%hd(4)
                   end if
+                  ! add to tile flow
+                  ob(icmd)%hin_til = ob(icmd)%hin_til + frac_in * ob(iob)%hd(5)
+                  if (cs_db%num_tot > 0 .and. obcs_alloc(icmd).eq.1) then
+                    obcs(icmd)%hin_til(1) = obcs(icmd)%hin_til(1) + frac_in * obcs(iob)%hd(5)
+                  end if
                 else
                   ! if hyd in is not a total hyd from an hru or ru -> add the specified hyd typ 
                   select case (ob(icmd)%htyp_in(in))

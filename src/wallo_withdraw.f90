@@ -28,9 +28,11 @@
       real :: withdraw = 0.         !m3
       real :: unmet = 0.            !m3
       real :: total_dmd = 0.        !m3
-        
+      real :: withdr_prev = 0.      !m3         |source's cumulative withdrawal before this call
+
       !! zero withdrawal hyd for the demand source
       ht5 = hz
+      withdr_prev = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
 
       !! check if water is available from each source - set withdrawal and unmet
       select case (wallo(iwallo)%dmd(idmd)%src_ob(isrc)%ob_typ)
@@ -74,8 +76,8 @@
           if (wallo(iwallo)%src(isrc)%div_vol >= dmd_m3) then
             irec = wallo(iwallo)%src(isrc)%rec_num !number in recall.rec
             rto = dmd_m3 / wallo(iwallo)%src(isrc)%div_vol
-            ht5 = (1. - rto) * recall(irec)%hd(time%day,time%yrs)
-            wallo(iwallo)%src(isrc)%div_vol = rto * wallo(iwallo)%src(isrc)%div_vol
+            ht5 = rto * recall(irec)%hd(time%day,time%yrs)
+            wallo(iwallo)%src(isrc)%div_vol = (1. - rto) * wallo(iwallo)%src(isrc)%div_vol
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr = wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr + dmd_m3
           else
             wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet = wallod_out(iwallo)%dmd(idmd)%src(isrc)%unmet + dmd_m3
@@ -91,8 +93,8 @@
           if (dmd_m3 <= avail) then
             !! only have flow, no3, and minp(solp) for aquifer
             ht5%flo = dmd_m3
+            rto = (dmd_m3 / (10. * aqu_prm(j)%area_ha)) / aqu_d(j)%stor  !mm, fraction of original storage withdrawn
             aqu_d(j)%stor = aqu_d(j)%stor - (dmd_m3 / (10. * aqu_prm(j)%area_ha))  !mm = m3/(10.*ha)
-            rto =  (dmd_m3 / (10. * aqu_prm(j)%area_ha)) / aqu_d(j)%stor  !mm
             ht5%no3 = rto * aqu_d(j)%no3_st
             aqu_d(j)%no3_st = (1. - rto) * aqu_d(j)%no3_st
             ht5%solp = rto * aqu_d(j)%minp
@@ -137,9 +139,10 @@
           
           !! add source withdrawal hyd to get total withdrawal hyd for the demand object
           wallo(iwallo)%dmd(idmd)%hd = wallo(iwallo)%dmd(idmd)%hd + ht5
-          
-          !! subtract withdrawal from unmet
-          wallo(iwallo)%dmd(idmd)%unmet_m3 = wallo(iwallo)%dmd(idmd)%unmet_m3 - wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr
+
+          !! subtract only this call's withdrawal (not the source's running total) from unmet
+          wallo(iwallo)%dmd(idmd)%unmet_m3 = wallo(iwallo)%dmd(idmd)%unmet_m3 -  &
+                (wallod_out(iwallo)%dmd(idmd)%src(isrc)%withdr - withdr_prev)
           
       return
     end subroutine wallo_withdraw

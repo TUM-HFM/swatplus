@@ -246,6 +246,7 @@
         integer :: wet_db = 0                   !none       |pointer to wetland data - saved so turn on/off
         real :: wet_hc = 0.                     !mm/h       |hydraulic conductivity of upper layer - wetlands
         real :: sno_mm = 0.                     !mm H2O     |amount of water in snow on current day
+        real :: sno_tmp = 0.                    !deg C      |temperature of snow pack
         real :: water_seep = 0.
         real :: water_evap = 0.
         real :: wet_obank_in = 0.               !mm         |inflow from overbank into wetlands

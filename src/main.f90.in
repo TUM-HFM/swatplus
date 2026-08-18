@@ -110,6 +110,7 @@
       end do
       
       call proc_cal
+      call time_conc_init
       call cli_lapse
 
       call proc_open
