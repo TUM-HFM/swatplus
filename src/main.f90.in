@@ -109,6 +109,7 @@
         call soil_nutcarb_init(isol)
       end do
       
+      call time_conc_init
       call proc_cal
       call time_conc_init
       call cli_lapse
