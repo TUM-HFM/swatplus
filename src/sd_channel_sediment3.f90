@@ -43,6 +43,7 @@
       real :: arc_len = 0.
       real :: prot_len = 0.
       real :: h_rad = 0.
+      real :: chn_day = 0.          !               |local Manning's n estimate for bank/bed erosion velocity only
       real :: fp_m2 = 0.
       real :: exp_co = 0.
       real :: florate_ob = 0.
@@ -81,20 +82,20 @@
       call rcurv_interp_flo (ich, peakrate)
       !! use peakrate as flow rate
       h_rad = rcurv%xsec_area / rcurv%wet_perim
-      sd_ch(ich)%chn = 0.39 * sd_ch(ich)%chs ** 0.38 * h_rad ** (-0.16)
-      sd_ch(ich)%chn = 0.5 + 0.2 * (ob(icmd)%area_ha / 100.) ** (-.3)
+      chn_day = 0.39 * sd_ch(ich)%chs ** 0.38 * h_rad ** (-0.16)
+      chn_day = 0.5 + 0.2 * (ob(icmd)%area_ha / 100.) ** (-.3)
       if (ob(icmd)%area_ha <= 5.) then
-        sd_ch(ich)%chn = 0.13
+        chn_day = 0.13
       end if
       if (ob(icmd)%area_ha >= 2500.) then
-        sd_ch(ich)%chn = 0.03
+        chn_day = 0.03
       end if
       if (ob(icmd)%area_ha > 5. .and. ob(icmd)%area_ha >= 2500.) then
-        sd_ch(ich)%chn = 0.2 / log(ob(icmd)%area_ha / 100.)
+        chn_day = 0.2 / log(ob(icmd)%area_ha / 100.)
       end if
-      sd_ch(ich)%chn = Min (0.15, sd_ch(ich)%chn)
-      sd_ch(ich)%chn = Max (0.02, sd_ch(ich)%chn)
-      vel = h_rad ** .6666 * Sqrt(sd_ch(ich)%chs) / (sd_ch(ich)%chn + .001)
+      chn_day = Min (0.15, chn_day)
+      chn_day = Max (0.02, chn_day)
+      vel = h_rad ** .6666 * Sqrt(sd_ch(ich)%chs) / (chn_day + .001)
       !vel = peakrate / rcurv%xsec_area
                 
       !! add precip to inflow - km * m * 1000 m/km * ha/10000 m2 = ha
