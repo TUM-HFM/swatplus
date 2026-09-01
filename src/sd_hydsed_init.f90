@@ -27,7 +27,6 @@
       integer :: ipest = 0              !none      |counter
       integer :: ipath = 0              !none      |counter
       integer :: idat = 0
-      integer :: i_dep = 0              !none      |counter
       integer :: icha = 0
       integer :: isalt = 0
       integer :: ics = 0
@@ -45,24 +44,12 @@
                                       !             |change in vertical distance on floodplain side
                                       !             |slopes; always set to 4 (slope=1/4)
       integer :: max                  !             |
-      real :: rh = 0.                 !m            |hydraulic radius
-      real :: qman                    !m^3/s or m/s |flow rate or flow velocity
       real :: bedvol = 0.             !m^3          |volume of river bed sediment
-      
-      real :: dep = 0.                !             |
-      real :: vel = 0.                !             |
+
       real :: flow_dep = 0.
-      real :: celerity = 0.
-      real :: msk1 = 0.    !units             |description 
-      real :: msk2 = 0.    !units             |description 
-      real :: detmax = 0.  !units             |description 
-      real :: xkm = 0.     !hr                |storage time constant for the reach
-      real :: det = 0.     !hr                |time step
-      real :: denom = 0.   !none              |variable to hold intermediate calculation
       real :: rto = 0.     !none              |ratio of channel volume to total volume
       real :: rto1 = 0.    !none              |ratio of flood plain volume to total volume
-      real :: sumc = 0.    !none              |sum of Muskingum coefficients
-      
+
       do i = 1, sp_ob%chandeg
         icmd = sp_ob1%chandeg + i - 1
         idat = ob(icmd)%props
@@ -141,69 +128,13 @@
         sd_ch_vel(i)%dep_bf = sd_ch(i)%chd  !delete sd_ch_vel when finished
         !! compute travel time coefficients - delete when finished with flood plain
 
-        !! compute rating curve
-        call sd_rating_curve (i)
-        
-        !! set Muskingum parameters
-        !! compute storage discharge for Muskingum at 0.1 and 1.0 times bankfull depth
-      do i_dep = 1, 2
-        if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
-        if (i_dep == 2) dep = sd_ch(i)%chd
-        !! c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
-        p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%chss ** 2)))
-        a = b * dep + dep / sd_ch(i)%chss
-        rh = a / p
-        vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
-        celerity = vel * 5. / 3.
-        if (i_dep == 1) then
-          !! 0.1*bankfull storage discharge coef
-          sd_ch(i)%stor_dis_01bf = sd_ch(i)%chl / (3.6 * celerity)
-        else
-          !! bankfull storage discharge coef
-          sd_ch(i)%stor_dis_bf = sd_ch(i)%chl / (3.6 * celerity)
-        end if
-      end do
-        
-      !! Compute storage time constant for reach (msk_co1 + msk_co2 = 1.)
-	  msk1 = bsn_prm%msk_co1 / (bsn_prm%msk_co1 + bsn_prm%msk_co2)
-	  msk2 = bsn_prm%msk_co2 / (bsn_prm%msk_co1 + bsn_prm%msk_co2)
-      xkm = sd_ch(i)%stor_dis_bf * msk1 + sd_ch(i)%stor_dis_01bf * msk2
-      
-      !! Muskingum numerical stability -Jaehak Jeong, 2011
-      detmax = 2.* xkm * (1.- bsn_prm%msk_x)
-      det = time%dtm / 60.      !hours
-      sd_ch(i)%msk%substeps = 1
-      
-      !! Discretize time interval to meet the stability criterion 
-      if (det > detmax) then
-        sd_ch(i)%msk%substeps = Int(det / detmax) + 1
-      end if
-      if (bsn_cc%rte == 0 .and. time%step <= 1) then
-        sd_ch(i)%msk%substeps = 1
-      end if
-      sd_ch(i)%msk%nsteps = time%step * sd_ch(i)%msk%substeps
-              
-        !! intial inflow-outflow
-        if (sd_ch(i)%msk%nsteps > 0) then
-          sd_ch(i)%in1_vol = rcurv%flo_rate / (86400. / sd_ch(i)%msk%nsteps)
-          sd_ch(i)%out1_vol = rcurv%flo_rate / (86400. / sd_ch(i)%msk%nsteps)
-        end if
-        
-        !! compute coefficients
-        det = det / sd_ch(i)%msk%substeps
-        denom = 2. * xkm * (1. - bsn_prm%msk_x) + det
-        sd_ch(i)%msk%c1 = (det - 2. * xkm * bsn_prm%msk_x) / denom
-        sd_ch(i)%msk%c1 = Max(0., sd_ch(i)%msk%c1)
-        sd_ch(i)%msk%c2 = (det + 2. * xkm * bsn_prm%msk_x) / denom
-        sd_ch(i)%msk%c3 = (2. * xkm * (1. - bsn_prm%msk_x) - det) / denom
-        !! c1+c2+c3 must equal 1
-        sumc = sd_ch(i)%msk%c1 + sd_ch(i)%msk%c2 + sd_ch(i)%msk%c3
-        sd_ch(i)%msk%c1 = sd_ch(i)%msk%c1 / sumc
-        sd_ch(i)%msk%c2 = sd_ch(i)%msk%c2 / sumc
-        sd_ch(i)%msk%c3 = sd_ch(i)%msk%c3 / sumc
-
       end do    !end of channel loop
- 
+
+      !! compute rating curve, travel-time coefficients, and Muskingum
+      !! parameters - also called again after proc_cal so calibration of
+      !! chn/chs/chl/chw/chd/chss takes effect (see sd_channel_rating_init)
+      call sd_channel_rating_init
+
       ! initialize organics-minerals in channel water and benthic from input data
       do ich = 1, sp_ob%chandeg
         ! only initialize storage for real channels (length > 1 m)

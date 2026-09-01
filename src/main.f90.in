@@ -112,6 +112,7 @@
       call time_conc_init
       call proc_cal
       call time_conc_init
+      call sd_channel_rating_init
       call cli_lapse
 
       call proc_open
