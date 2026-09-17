@@ -7,7 +7,7 @@
      implicit none
 
     !! RESERVOIR/WETLAND - DAILY
-      if (pco%res%d == "y") then
+      if (pco%wet%d == "y") then
         open (2548,file="wetland_day.txt",recl=1500)
         write (2548,*) bsn%name, prog
         write (9000,*) "RES_WET                   wetland_day.txt"
@@ -23,7 +23,7 @@
       end if
       
     !! RESERVOIR/WETLAND - MONTHLY
-      if (pco%res%m == "y") then
+      if (pco%wet%m == "y") then
         open (2549,file="wetland_mon.txt",recl=1500)
         write (2549,*) bsn%name, prog
         write (9000,*) "RES_WET                   wetland_mon.txt"
@@ -39,7 +39,7 @@
       end if
       
    !! RESERVOIR/WETLAND YEARLY
-     if (pco%res%y == "y") then
+     if (pco%wet%y == "y") then
         open (2550,file="wetland_yr.txt",recl=1500)
         write (2550,*) bsn%name, prog
         write (9000,*) "RES_WET                   wetland_yr.txt"
@@ -56,7 +56,7 @@
      
     
     !! RESERVOIR/WETLAND - AVERAGE ANNUAL   
-      if (pco%res%a == "y") then
+      if (pco%wet%a == "y") then
         open (2551,file="wetland_aa.txt",recl=1500)
         write (2551,*) bsn%name, prog
         write (2551,*) ch_wbod_hdr, hyd_stor_hdr, hyd_in_hdr, hyd_out_hdr

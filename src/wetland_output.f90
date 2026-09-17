@@ -16,7 +16,7 @@
 
 !!!!! daily print
          if (pco%day_print == "y" .and. pco%int_day_cur == pco%int_day) then
-          if (pco%res%d == "y") then
+          if (pco%wet%d == "y") then
             write (2548,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_wat_d(j), wet(j), &
             wet_in_d(j), wet_out_d(j)
              if (pco%csvout == "y") then
@@ -42,7 +42,7 @@
           wet_wat_y(j) = wet_wat_y(j) + wet_wat_m(j)
           wet_in_m(j)%flo = wet_in_m(j)%flo / const
           wet_out_m(j)%flo = wet_out_m(j)%flo / const
-          if (pco%res%m == "y") then
+          if (pco%wet%m == "y") then
             write (2549,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_wat_m(j), wet(j), &
             wet_in_m(j), wet_out_m(j)
               if (pco%csvout == "y") then
@@ -62,7 +62,7 @@
           wet_wat_a(j) = wet_wat_a(j) + wet_wat_y(j)
           wet_in_y(j)%flo = wet_in_y(j)%flo / 12.
           wet_out_y(j)%flo = wet_out_y(j)%flo / 12.
-          if (pco%res%y == "y") then
+          if (pco%wet%y == "y") then
             write (2550,100) time%day, time%mo, time%day_mo, time%yrc, j, ob(iob)%gis_id, ob(iob)%name, wet_wat_y(j), wet(j), &
             wet_in_y(j), wet_out_y(j)
               if (pco%csvout == "y") then
@@ -76,7 +76,7 @@
        end if
 
 !!!!! average annual print
-        if (time%end_sim == 1 .and. pco%res%a == "y") then
+        if (time%end_sim == 1 .and. pco%wet%a == "y") then
           wet_in_a(j) = wet_in_y(j) / time%yrs_prt
           wet_out_a(j) = wet_out_y(j) / time%yrs_prt
           wet_wat_a(j) = wet_wat_a(j) / time%yrs_prt

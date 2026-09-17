@@ -182,6 +182,9 @@
         character(len=1) :: mgtout = "n"         !!  management output file (mgt.out) (default ave annual-d,m,y,a input)
         character(len=1) :: hydcon = "n"         !!  hydrograph connect output file (hydcon.out)
         character(len=1) :: fdcout = "n"         !!  flow duration curve output n=no print; avann=print; NOT ACTIVE
+        character(len=1) :: checker   = "n"      !!  checker.out n=no print; y=print
+        character(len=1) :: lu_change = "n"      !!  lu_change_out.txt n=no print; y=print
+        character(len=1) :: snutc_out = "n"      !!  hru_orgc.txt, hru_totc.txt, basin_totc.txt n=no print; y=print
       ! BASIN
         type(print_interval) :: wb_bsn          !!  water balance BASIN output
         type(print_interval) :: nb_bsn          !!  nutrient balance BASIN output
@@ -221,10 +224,13 @@
         type(print_interval) :: chan            !!  channel output
         ! CHANNEL_LTE
         type(print_interval) :: sd_chan         !!  swat deg (lte) channel output
+        type(print_interval) :: sd_chanmorph    !!  channel_sdmorph_*.txt (dedicated from sd_chan)
+        type(print_interval) :: sd_chanbud      !!  sd_chanbud_*.txt (dedicated from sd_chan)
         ! AQUIFER
         type(print_interval) :: aqu             !!  aqufier output
         ! RESERVOIR
         type(print_interval) :: res             !!  reservoir output
+        type(print_interval) :: wet             !!  wetland_*.txt (dedicated from res)
         ! RECALL
         type(print_interval) :: recall          !!  recall output
         ! HYDIN AND HYDOUT

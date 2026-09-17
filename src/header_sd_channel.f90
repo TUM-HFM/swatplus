@@ -146,7 +146,7 @@
          
 !!!!!!!! SD_CHANMORPH
       if (sp_ob%chandeg > 0) then
-        if (pco%sd_chan%d == "y") then
+        if (pco%sd_chanmorph%d == "y") then
           open (4800,file="channel_sdmorph_day.txt",recl = 1500)
           write (4800,*) bsn%name, prog
           write (4800,*) sdch_hdr !! swat deg channel morph
@@ -163,7 +163,7 @@
       endif
       
         if (sp_ob%chandeg > 0) then
-          if (pco%sd_chan%m == "y") then  
+          if (pco%sd_chanmorph%m == "y") then
           open (4801,file="channel_sdmorph_mon.txt",recl = 1500)
           write (4801,*) bsn%name, prog
           write (4801,*) sdch_hdr   !! swat deg channel morph
@@ -180,7 +180,7 @@
          end if 
         
       if (sp_ob%chandeg > 0) then
-        if (pco%sd_chan%y == "y") then
+        if (pco%sd_chanmorph%y == "y") then
           open (4802,file="channel_sdmorph_yr.txt",recl = 1500)
           write (4802,*) bsn%name, prog
           write (4802,*) sdch_hdr !! swat deg channel morph
@@ -197,7 +197,7 @@
       endif
       
         if (sp_ob%chandeg > 0) then
-          if (pco%sd_chan%a == "y") then
+          if (pco%sd_chanmorph%a == "y") then
           open (4803,file="channel_sdmorph_aa.txt",recl = 1500)
           write (4803,*) bsn%name, prog
           write (4803,*) sdch_hdr   !! swat deg channel morph
@@ -215,65 +215,73 @@
 !!!!!!!! SD_CHANMORPH
          
 !! SWAT DEG CHANBUD OUTPUT
-        if (pco%sd_chan%d == "y") then
+      if (sp_ob%chandeg > 0) then
+        if (pco%sd_chanbud%d == "y") then
           open (4808,file="sd_chanbud_day.txt", recl = 1500)
           write (4808,*) bsn%name, prog
           write (4808,*) sdch_bud_hdr
           write (4808,*) sdch_bud_hdr_units
           write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_day.txt"
-          if (pco%csvout == "y") then 
+          if (pco%csvout == "y") then
             open (4812,file="sd_chanbud_day.csv", recl = 1500)
             write (4812,*) bsn%name, prog
             write (4812,'(*(G0.3,:","))') sdch_bud_hdr
-            write (4812,'(*(G0.3,:","))') sdch_bud_hdr_units        
+            write (4812,'(*(G0.3,:","))') sdch_bud_hdr_units
             write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_day.csv"
           end if
         endif
-        
-       if (pco%sd_chan%m == "y") then
+      endif
+
+      if (sp_ob%chandeg > 0) then
+       if (pco%sd_chanbud%m == "y") then
         open (4809,file="sd_chanbud_mon.txt",recl = 1500)
         write (4809,*) bsn%name, prog
         write (4809,*) sdch_bud_hdr
         write (4809,*) sdch_bud_hdr_units
         write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_mon.txt"
-         if (pco%csvout == "y") then 
+         if (pco%csvout == "y") then
            open (4813,file="sd_chanbud_mon.csv",recl = 1500)
            write (4813,*) bsn%name, prog
-           write (4813,'(*(G0.3,:","))') sdch_bud_hdr 
-           write (4813,'(*(G0.3,:","))') sdch_bud_hdr_units        
+           write (4813,'(*(G0.3,:","))') sdch_bud_hdr
+           write (4813,'(*(G0.3,:","))') sdch_bud_hdr_units
            write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_mon.csv"
          end if
         end if
-       
-        if (pco%sd_chan%y == "y") then
+      endif
+
+      if (sp_ob%chandeg > 0) then
+        if (pco%sd_chanbud%y == "y") then
           open (4810,file="sd_chanbud_yr.txt", recl = 1500)
           write (4810,*) bsn%name, prog
-          write (4810,*) sdch_bud_hdr 
+          write (4810,*) sdch_bud_hdr
           write (4810,*) sdch_bud_hdr_units
           write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_yr.txt"
-          if (pco%csvout == "y") then 
+          if (pco%csvout == "y") then
             open (4814,file="sd_chanbud_yr.csv", recl = 1500)
             write (4814,*) bsn%name, prog
             write (4814,'(*(G0.3,:","))') sdch_bud_hdr
-            write (4814,'(*(G0.3,:","))') sdch_bud_hdr_units        
+            write (4814,'(*(G0.3,:","))') sdch_bud_hdr_units
             write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_yr.csv"
           end if
         endif
-        
-        if (pco%sd_chan%a == "y") then
+      endif
+
+      if (sp_ob%chandeg > 0) then
+        if (pco%sd_chanbud%a == "y") then
           open (4811,file="sd_chanbud_aa.txt",recl = 1500)
           write (4811,*) bsn%name, prog
-          write (4811,*) sdch_bud_hdr 
+          write (4811,*) sdch_bud_hdr
           write (4811,*) sdch_bud_hdr_units
           write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_aa.txt"
-          if (pco%csvout == "y") then 
+          if (pco%csvout == "y") then
             open (4815,file="sd_chanbud_aa.csv",recl = 1500)
             write (4815,*) bsn%name, prog
-            write (4815,'(*(G0.3,:","))') sdch_bud_hdr 
-            write (4815,'(*(G0.3,:","))') sdch_bud_hdr_units 
+            write (4815,'(*(G0.3,:","))') sdch_bud_hdr
+            write (4815,'(*(G0.3,:","))') sdch_bud_hdr_units
             write (9000,*) "SWAT_DEG_CHAN_BUD         sd_chanbud_aa.csv"
           end if
         end if
+      endif
 !! SWAT DEG CHANBUD OUTPUT
        
       return

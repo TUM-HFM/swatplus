@@ -1,6 +1,7 @@
       subroutine proc_hru
     
       use hydrograph_module
+      use basin_module
       use maximum_data_module
       use hru_module
       use soil_module
@@ -48,7 +49,8 @@
       write (4001,*) ero_hdr
       write (4001,*) ero_hdr_units
             
-!!!!! new checker.out file - always prints
+!!!!! checker.out file - only prints if pco%checker = "y"
+      if (pco%checker == "y") then
       open (4000,file = "checker.out",recl=1200)
       write (4000,*) bsn%name, prog
       write (4000,*) chk_hdr
@@ -58,9 +60,10 @@
       do j = 1, sp_ob%hru
          write (4000,100) soil(j)%snam, soil(j)%hydgrp, soil(j)%zmx, soil(j)%usle_k, soil(j)%sumfc,  &
             soil(j)%sumul, hru(j)%lumv%usle_p, hru(j)%lumv%usle_ls, hru(j)%hyd%esco, hru(j)%hyd%epco,      &
-            hru(j)%hyd%cn3_swf, hru(j)%hyd%perco, hru(j)%hyd%latq_co, hru(j)%tiledrain  
+            hru(j)%hyd%cn3_swf, hru(j)%hyd%perco, hru(j)%hyd%latq_co, hru(j)%tiledrain
       end do
-!!!!! new checker.out file - always prints
+      end if
+!!!!! checker.out file - only prints if pco%checker = "y"
         
       end if
 
