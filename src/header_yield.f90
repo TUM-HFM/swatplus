@@ -18,14 +18,18 @@
       
 !!! BASIN CROP YIELDS
       if (sp_ob%hru > 0) then
+        if (pco%crop_yld == "y" .or. pco%crop_yld == "b") then
         open (5100,file="basin_crop_yld_yr.txt", recl=800)
         write (5100,*) bsn%name, prog
         write (5100,*) bsn_yld_hdr
         write (9000,*) "BASIN_CROP_YLD            basin_crop_yld_yr.txt"
+        end if
+        if (pco%crop_yld == "a" .or. pco%crop_yld == "b") then
         open (5101,file="basin_crop_yld_aa.txt", recl=800)
         write (5101,*) bsn%name, prog
         write (5101,*) bsn_yld_hdr
         write (9000,*) "BASIN_CROP_YLD            basin_crop_yld_aa.txt"
+        end if
       end if
       
       return

@@ -172,6 +172,17 @@
         if (eof < 0) exit
         read (107,*,iostat=eof) name, pco%cs_wet
         if (eof < 0) exit
+      !! HFM: additional print controls appended for backward compatibility
+        read (107,*,iostat=eof) header
+        if (eof < 0) exit
+        read (107,*,iostat=eof) pco%checker, pco%lu_change, pco%snutc_out
+        if (eof < 0) exit
+        read (107,*,iostat=eof) name, pco%sd_chanmorph
+        if (eof < 0) exit
+        read (107,*,iostat=eof) name, pco%sd_chanbud
+        if (eof < 0) exit
+        read (107,*,iostat=eof) name, pco%wet
+        if (eof < 0) exit
         exit
       end do
       end if

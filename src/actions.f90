@@ -902,8 +902,10 @@
             !"option" is the updated lsu_unit.ele and "file_pointer" is rout_unit.ele
             call hru_fr_change (d_tbl%act(iac)%option, d_tbl%act(iac)%file_pointer)
             !! write to new landuse change file
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "   HRU_FRACTION_CHANGE ",        &
                     d_tbl%act(iac)%option, d_tbl%act(iac)%file_pointer, "   0   0"
+            end if
                             
           !land use change - total land use and management change
           case ("lu_change")
@@ -922,8 +924,10 @@
             hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
             !! write to new landuse change file
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "    LU_CHANGE ",        &
                     lu_prev, hru(j)%land_use_mgt_c, "   0   0"
+            end if
                             
           !land use change - contouring
           case ("p_factor")
@@ -938,8 +942,10 @@
             hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
             !! write to new landuse change file
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "     P_FACTOR",        &
                     "  null           null",  p_factor, hru(j)%lumv%usle_p
+            end if
                                 
           !land use change - contouring
           case ("contour")
@@ -953,8 +959,10 @@
             rock = Exp(-.053 * soil(j)%phys(1)%rock)
             hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "      CONTOUR ",        &
                     "  null           null",  p_factor, hru(j)%lumv%usle_p
+            end if
                                   
           !land use change - strip cropping
           case ("stripcrop")
@@ -970,8 +978,10 @@
             rock = Exp(-.053 * soil(j)%phys(1)%rock)
             hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "    STRIPCROP ",        &
-                    "  null           null",  p_factor, hru(j)%lumv%usle_p  
+                    "  null           null",  p_factor, hru(j)%lumv%usle_p
+            end if
                     
           !land use change
           case ("terrace")
@@ -987,8 +997,10 @@
             rock = Exp(-.053 * soil(j)%phys(1)%rock)
             hru(j)%lumv%usle_mult = rock * soil(j)%ly(1)%usle_k *       &
                                  hru(j)%lumv%usle_p * hru(j)%lumv%usle_ls * 11.8
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  "      TERRACE ",        &
-                    "  null           null",  p_factor, hru(j)%lumv%usle_p  
+                    "  null           null",  p_factor, hru(j)%lumv%usle_p
+            end if
                     
           !install tile drains
           case ("tile_install")
@@ -1008,8 +1020,10 @@
             end if
             !! write to new landuse change file
             istr = hru(j)%tiledrain
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  " TILE_INSTALL ",        &
               sdr(istr)%name, sdr(istr1)%name, "   0   0"
+            end if
                       
           !install septic tanks
           case ("septic_install")
@@ -1027,8 +1041,10 @@
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("septic          ", istr1, j)
             end if
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  " SEPTIC_INSTALL ",       &
               sdr(istr)%name, sdr(istr1)%name, "   0   0"
+            end if
                                     
           !install filter strips
           case ("fstrip_install")
@@ -1046,8 +1062,10 @@
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("fstrip         ", istr1, j)
             end if
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  " FSTRIP_INSTALL ",       &
               sdr(istr)%name, sdr(istr1)%name, "   0   0"
+            end if
                                               
           !install grass waterways
           case ("grassww_install")
@@ -1065,8 +1083,10 @@
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("grassww         ", istr1, j)
             end if
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  " GRASSWW_INSTALL ",       &
               sdr(istr)%name, sdr(istr1)%name, "   0   0"
+            end if
                                                          
           !user defined bmp reductions
           case ("user_def_bmp")
@@ -1084,8 +1104,10 @@
             if (d_tbl%act(iac)%file_pointer /= "null") then
               call structure_set_parms("user_def        ", istr1, j)
             end if
+            if (pco%lu_change == "y") then
             write (3612,*) j, time%yrc, time%mo, time%day_mo,  " USER_DEF_BMP ",       &
               sdr(istr)%name, sdr(istr1)%name, "   0   0"
+            end if
                                         
           !channel change
           case ("chan_change")

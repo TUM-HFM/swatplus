@@ -2,11 +2,12 @@
     
      use hydrograph_module
      use soil_nutcarb_module
-    
-     implicit none 
+     use basin_module
+
+     implicit none
 
 !!write all organic carbon for the soil profile
-     if (sp_ob%hru > 0) then
+     if (sp_ob%hru > 0 .and. pco%snutc_out == "y") then
         open (2610,file="hru_orgc.txt",recl=800)
         write (2610,*) bsn%name, prog
         write (9000,*) "HRU_ORGC                  hru_orgc.txt"
