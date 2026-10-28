@@ -47,6 +47,8 @@
       use urban_data_module
       use constituent_mass_module !rtb salt
       use salt_data_module !rtb salt
+      use hydrograph_module, only : wet
+      use water_body_module, only : wet_wat_d
       
       implicit none
       
@@ -218,6 +220,16 @@
           
         end do      !! soil layer loop
         
+        !! wetland/paddy plants take unmet demand from ponded water - mm=m3/(10*ha)
+        if (hru(j)%dbs%surf_stor > 0 .and. wet(j)%flo > 0.) then
+          wuse = amin1 (epmax(ipl) - sum_wuse, wet(j)%flo / (10. * hru(j)%area_ha))
+          if (wuse > 0.) then
+            wet(j)%flo = wet(j)%flo - wuse * 10. * hru(j)%area_ha
+            wet_wat_d(j)%evap = wet_wat_d(j)%evap + wuse * 10. * hru(j)%area_ha
+            sum_wuse = sum_wuse + wuse
+          end if
+        end if
+
         !! update total soil water in profile
         soil(j)%sw = 0.
         do k = 1, soil(j)%nly
