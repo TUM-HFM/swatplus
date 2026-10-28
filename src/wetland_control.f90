@@ -3,7 +3,7 @@
       use reservoir_data_module
       use reservoir_module
       use hru_module, only : hru, sedyld, sanyld, silyld, clayld, sagyld, lagyld, grayld, sedminps, sedminpa,   &
-        surqno3, sedorgn, sedorgp, ihru, pet_day, surfq, tconc, usle_cfac, cklsp, hhsurfq
+        surqno3, sedorgn, sedorgp, ihru, pet_day, surfq, tconc, usle_cfac, cklsp, hhsurfq, precip_eff
       use conditional_module
       use climate_module
       use hydrograph_module
@@ -67,8 +67,9 @@
       dep_init = wet_ob(j)%depth !m
       
       !! add precipitation - mm*ha*10.=m3 (used same area for infiltration and soil evap)
-      wet_wat_d(j)%precip = w%precip * wsa1 !m3
-      wet_ob(j)%depth = wet_ob(j)%depth + w%precip / 1000.  !m  Jaehak 2022
+      !! precip_eff - after canopy interception, snowfall and snowmelt (sq_canopyint, sq_snom)
+      wet_wat_d(j)%precip = precip_eff * wsa1 !m3
+      wet_ob(j)%depth = wet_ob(j)%depth + precip_eff / 1000.  !m  Jaehak 2022
       wet(j)%flo =  wet(j)%flo + wet_wat_d(j)%precip !m3
       
       !! add irrigation water to the paddy/wetland storage 
