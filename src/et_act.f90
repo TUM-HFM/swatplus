@@ -155,7 +155,7 @@
         esleft = es_max
 
         !! compute sublimation
-        if (w%tave > 0.) then
+        if (hru(j)%sno_mm > 0.) then
           if (hru(j)%sno_mm >= esleft) then
             !! take all soil evap from snow cover
             hru(j)%sno_mm = hru(j)%sno_mm - esleft
