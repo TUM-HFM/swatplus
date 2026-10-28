@@ -125,6 +125,8 @@
       !! add water transfer
       if (ob(icmd)%trans%flo > 1.e-6) then
         ht1 = ht1 + ob(icmd)%trans
+        !! add transfer to subdaily inflow - ch_rtmusk routes only sum(tsin)
+        ob(icmd)%tsin(:) = ob(icmd)%tsin(:) + ob(icmd)%trans%flo / time%step
         ob(icmd)%trans = hz
       end if
       

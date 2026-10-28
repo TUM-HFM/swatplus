@@ -361,7 +361,10 @@
               call sd_channel_control3
             else
                 !! artificial channel - length=0 - no transformations
-                ob(icmd)%hd(1) = ob(icmd)%hin
+                ob(icmd)%hd(1) = ob(icmd)%hin + ob(icmd)%trans
+                !! set subdaily outflow - downstream channels build tsin from hyd_flo
+                ob(icmd)%hyd_flo(1,:) = ob(icmd)%tsin(:) + ob(icmd)%trans%flo / time%step
+                ob(icmd)%trans = hz
                 
                 ch_in_d(isdch) = ht1                        !set inflow om hydrograph
                 chsd_d(isdch)%flo_in = ht1%flo / 86400.     !flow for morphology output
