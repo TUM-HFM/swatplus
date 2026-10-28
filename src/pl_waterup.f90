@@ -134,9 +134,9 @@
           !pcom(j)%plcur(ipl)%epco = 0.9
           !! let second layer compensate - 10 mm layer causes problems wehn root depth is shallow
           if (k == 2) then
-            wuse = sum      !epco is always 1.0 for second layer
+            wuse = sum - sum_wusep      !epco is always 1.0 for second layer
           else
-            wuse = sum - sump * (1. - pcom(j)%plcur(ipl)%epco)
+            wuse = sum - sump + pcom(j)%plcur(ipl)%epco * (sump - sum_wusep)
           end if
           
           ! adjust for impervious area
