@@ -92,6 +92,7 @@
 !! take canopy effects into account in the equations. For either of the
 !! CN methods, canstor will always equal zero.
       canev = 0.
+      wet_wat_d(j)%evap = 0.
       pet = pet - canstor(j)
       if (pet < 0.) then
         canstor(j) = -pet
@@ -173,7 +174,6 @@
         endif
 
         !! compute evaporation from ponded water
-        wet_wat_d(j)%evap = 0.
         if (wet(j)%flo > 0.) then
           wetvol_mm = wet(j)%flo / (10. *  hru(j)%area_ha)    !mm=m3/(10.*ha)
           !! take all soil evap from wetland storage before taking from soil

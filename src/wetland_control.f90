@@ -63,6 +63,7 @@
 
       !! initialize variables for wetland daily simulation
       hru(j)%water_seep = 0.
+      wet_wat_d(j)%seep = 0.
       wet_ob(j)%depth = wet(j)%flo / wsa1 / 1000. !m
       dep_init = wet_ob(j)%depth !m
       

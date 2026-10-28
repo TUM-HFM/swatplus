@@ -116,6 +116,7 @@
       hpc_d(j) = hpcz
       hscf_d(j) = hscfz
       hru(j)%water_seep = 0.
+      hru(j)%water_evap = 0.
       irrig(j)%demand = 0.
       hnb_d(j)%nuptake = 0.
       hnb_d(j)%puptake = 0.
