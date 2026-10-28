@@ -172,8 +172,13 @@
           chsd_d(ich)%aqu_in_mm = (aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd%flo) / (10. * ob(icmd)%area_ha)
           !! add aquifer flow to inflow
           aqu_inflo = aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd%flo
-          rto = aqu_inflo / ht1%flo
-          ob(icmd)%tsin(:) = (1. + rto) * ob(icmd)%tsin(:)
+          if (ht1%flo > 1.e-6) then
+            rto = aqu_inflo / ht1%flo
+            ob(icmd)%tsin(:) = (1. + rto) * ob(icmd)%tsin(:)
+          else
+            !! no other inflow - spread aquifer inflow evenly over the day
+            ob(icmd)%tsin(:) = ob(icmd)%tsin(:) + aqu_inflo / time%step
+          end if
           ht1 = ht1 + aq_ch(iaq)%ch(iaq_ch)%flo_fr * aq_ch(iaq)%hd
           !rtb salt
           do isalt=1,cs_db%num_salts
