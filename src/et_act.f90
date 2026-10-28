@@ -140,17 +140,11 @@
           else
             es_max = 0.
           endif
+        end if
 
-        else  
-        
-          !! make sure maximum plant and soil ET doesn't exceed potential ET
-          if (pet_day < es_max + ep_max) then
-            es_max = pet_day - ep_max
-            if (pet < es_max + ep_max) then
-              es_max = pet * es_max / (es_max + ep_max)
-              ep_max = pet * ep_max / (es_max + ep_max)
-            end if
-          end if
+        !! make sure maximum plant and soil ET doesn't exceed potential ET left after canopy evap
+        if (pet < es_max + ep_max) then
+          es_max = Max(0., pet - ep_max)
         end if
         
         !! adjust es_max and ep_max for impervous urban cover
