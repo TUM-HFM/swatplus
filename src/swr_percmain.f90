@@ -70,7 +70,8 @@
       if (ires==0) then
         sepday = inflpcp + irrig(j)%applied + ht1%flo !mm
       else
-        sepday = inflpcp + ht1%flo / (hru(j)%area_ha * 10.)
+        !! runon is already in wetland storage - reaches soil via seepage (inflpcp)
+        sepday = inflpcp
       endif
       
       !hru(j)%water_seep = 0.

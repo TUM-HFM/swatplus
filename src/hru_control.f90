@@ -240,8 +240,10 @@
         if (ob(icmd)%hin_sur%flo > 1.e-6 .or. ob(icmd)%hin_til%flo > 1.e-6) then
           !!route incoming surface runoff
           if (ires > 0) then
-            !! add surface runon to wetland
-            ht1 = ob(icmd)%hin_sur + tile_fr_surf * ob(icmd)%hin_til
+            !! add surface runon to wetland - hin is mm and kg/ha, wetland storage is m3 and kg
+            ls_overq = ob(icmd)%hin_sur%flo + tile_fr_surf * ob(icmd)%hin_til%flo
+            ht1 = hru(j)%area_ha * (ob(icmd)%hin_sur + tile_fr_surf * ob(icmd)%hin_til)
+            ht1%flo = 10. * ht1%flo
             wet(j) = wet(j) + ht1
           else
             !! route across hru - infiltrate and deposit sediment
