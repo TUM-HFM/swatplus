@@ -365,6 +365,8 @@
                 !! set subdaily outflow - downstream channels build tsin from hyd_flo
                 ob(icmd)%hyd_flo(1,:) = ob(icmd)%tsin(:) + ob(icmd)%trans%flo / time%step
                 ob(icmd)%trans = hz
+                !! inflow = outflow for output below (ht1 is not set in this branch)
+                ht1 = ob(icmd)%hd(1)
                 
                 ch_in_d(isdch) = ht1                        !set inflow om hydrograph
                 chsd_d(isdch)%flo_in = ht1%flo / 86400.     !flow for morphology output

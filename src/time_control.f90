@@ -378,7 +378,8 @@
         !! write channel morphology - downcutting and widening
         ch_morph(ich)%w_yr = ch_morph(ich)%w_yr / sd_ch(ich)%chw / time%yrs_prt
         ch_morph(ich)%d_yr = ch_morph(ich)%d_yr / sd_ch(ich)%chd / time%yrs_prt
-        ch_morph(ich)%fp_mm = ch_morph(ich)%fp_mm / (3. * sd_ch(ich)%chw *           &
+        !! Max - zero-length channels (chl = 0) are not routed (command) and have fp_mm = 0
+        ch_morph(ich)%fp_mm = ch_morph(ich)%fp_mm / Max(1.e-6, 3. * sd_ch(ich)%chw *   &
                                          sd_ch(ich)%chl * 1000.) / time%yrs_prt
         iob = sp_ob1%chandeg + ich - 1
         !write (7778,*) ich, ob(iob)%name, ch_morph(ich)%w_yr, ch_morph(ich)%d_yr, ch_morph(ich)%fp_mm
