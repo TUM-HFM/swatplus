@@ -349,7 +349,7 @@
             if (idp > 0) then
               if (pldb(idp)%typ == "perennial") then
                 pcom(j)%plcur(ipl)%curyr_mat = pcom(j)%plcur(ipl)%curyr_mat + 1
-                pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,pldb(idp)%mat_yrs)
+                pcom(j)%plcur(ipl)%curyr_mat = Min(pcom(j)%plcur(ipl)%curyr_mat,int(pldb(idp)%mat_yrs))
               end if
             end if
           end do

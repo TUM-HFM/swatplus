@@ -17,7 +17,7 @@
                                          !                  |moisture_gro
                                          !                  |temp_gro
         real :: nfix_co = 0.             !none              |n fixation coefficient (0.5 legume; 0 non-legume)
-        integer :: days_mat = 110        !days              |days to maturity - if zero use hu for entire growing season
+        real :: days_mat = 110.          !days              |days to maturity - if zero use hu for entire growing season
         real :: bio_e = 15.0             !(kg/ha/(MJ/m**2)  |biomass-energy ratio
         real :: hvsti = 0.76             !(kg/ha)/(kg/ha)   |harvest index: crop yield/aboveground biomass
         real :: blai = 5.0               !none              |max (potential) leaf area index
@@ -57,7 +57,7 @@
         real :: rsdco_pl = 0.05          !none              |plant residue decomposition coeff
         real :: alai_min = 0.75          !m**2/m**2         |min LAI during winter dormant period
         real :: laixco_tree = 0.3        !none              |coefficient to estimate max lai during tree growth
-        integer :: mat_yrs = 10          !years             |years to maturity  
+        real :: mat_yrs = 10.            !years             |years to maturity  
         real :: bmx_peren = 1000.        !metric tons/ha    |max biomass for forest
         real :: ext_coef = 0.65          !                  |light extinction coefficient
         real :: leaf_tov_min = 12.       !months            |perennial leaf turnover rate with minimum stress (complete turnover in 12 mon)
