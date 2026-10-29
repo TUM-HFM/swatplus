@@ -225,7 +225,7 @@
             
             ! calculate heat units from plant day (iday) to maturity (add days to maturity)
             phutot = 0.
-            do iday = igrow, igrow + pldb(idp)%days_mat
+            do iday = igrow, igrow + int(pldb(idp)%days_mat)
               if (wgn(iwgn)%lat > 0.) then
                 call xmon (iday, mo, day_mo)
               else
@@ -295,7 +295,7 @@
           end if
           pcom(j)%laimx_sum = pcom(j)%laimx_sum + pldb(idp)%blai
           pl_mass(j)%tot(ipl)%m = pcomdb(icom)%pl(ipl)%bioms
-          pcom(j)%plcur(ipl)%curyr_mat = int (pcomdb(icom)%pl(ipl)%fr_yrmat * float(pldb(idp)%mat_yrs))
+          pcom(j)%plcur(ipl)%curyr_mat = int (pcomdb(icom)%pl(ipl)%fr_yrmat * pldb(idp)%mat_yrs)
           pcom(j)%plcur(ipl)%curyr_mat = max (1, pcom(j)%plcur(ipl)%curyr_mat)
           ! set total hu to maturity for perennials
           pcom(j)%plcur(ipl)%phumat_p = pcom(j)%plcur(ipl)%phumat * pldb(idp)%mat_yrs

@@ -21,7 +21,7 @@
       case ("cha")
         j = wallo(iwallo)%dmd(idmd)%rcv_num
         iob = sd_ch(j)%obj_no
-        ob(iob)%trans = wallo(iwallo)%dmd(idmd)%hd
+        ob(iob)%trans = ob(iob)%trans + wallo(iwallo)%dmd(idmd)%hd
             
       !! reservor source
       case ("res")

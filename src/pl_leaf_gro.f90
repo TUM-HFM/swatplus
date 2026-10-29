@@ -108,7 +108,7 @@
             deltalai = 0.
             if (pldb(idp)%typ == "perennial") then
               if (pcom(j)%plcur(ipl)%curyr_mat < 1) pcom(j)%plcur(ipl)%curyr_mat = 1
-              rto_lin = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
+              rto_lin = float(pcom(j)%plcur(ipl)%curyr_mat) / pldb(idp)%mat_yrs
               rto = alog10 (rto_lin)
               lai_exp = rto * pldb(idp)%laixco_tree
               laimax = pcom(j)%plcur(ipl)%lai_pot * 10. ** lai_exp

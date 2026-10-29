@@ -28,7 +28,7 @@
               Exp(plcp(idp)%leaf1 - plcp(idp)%leaf2 * pcom(j)%plcur(ipl)%phuacc_p))
       !pcom(j)%plg(ipl)%lai = transpl(itrans)%lai
       pl_mass(j)%tot(ipl)%m = transpl(itrans)%bioms
-      pcom(j)%plcur(ipl)%curyr_mat = int (transpl(itrans)%fr_yrmat * float(pldb(idp)%mat_yrs))
+      pcom(j)%plcur(ipl)%curyr_mat = int (transpl(itrans)%fr_yrmat * pldb(idp)%mat_yrs)
       pcom(j)%plcur(ipl)%curyr_mat = max (1, pcom(j)%plcur(ipl)%curyr_mat)
       pcom(j)%plcur(ipl)%idplt = pcomdb(icom)%pl(ipl)%db_num
       pcom(j)%plm(ipl)%p_fr = (pldb(idp)%pltpfr1-pldb(idp)%pltpfr3)*            &

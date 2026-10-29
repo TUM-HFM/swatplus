@@ -92,6 +92,7 @@
 !! take canopy effects into account in the equations. For either of the
 !! CN methods, canstor will always equal zero.
       canev = 0.
+      wet_wat_d(j)%evap = 0.
       pet = pet - canstor(j)
       if (pet < 0.) then
         canstor(j) = -pet
@@ -104,17 +105,20 @@
         canstor(j) = 0.
       endif
 
+      !! Penman-Monteith ep_max (et_pot) can't exceed PET left after canopy evap
+      ep_max = Min(ep_max, pet)
+
       if (pet > 1.0e-6) then
 
         !! compute potential plant evap for methods other that Penman-Monteith
-        !if (bsn_cc%pet /= 1) then
+        if (bsn_cc%pet /= 1) then
           if (pcom(j)%lai_sum <= 3.0) then
             ep_max = pcom(j)%lai_sum * pet / 3.
           else
             ep_max = pet
           end if
           if (ep_max < 0.) ep_max = 0.
-        !end if
+        end if
 
         !! compute potential soil evaporation
         cej = -5.e-5
@@ -140,17 +144,11 @@
           else
             es_max = 0.
           endif
+        end if
 
-        else  
-        
-          !! make sure maximum plant and soil ET doesn't exceed potential ET
-          if (pet_day < es_max + ep_max) then
-            es_max = pet_day - ep_max
-            if (pet < es_max + ep_max) then
-              es_max = pet * es_max / (es_max + ep_max)
-              ep_max = pet * ep_max / (es_max + ep_max)
-            end if
-          end if
+        !! make sure maximum plant and soil ET doesn't exceed potential ET left after canopy evap
+        if (pet < es_max + ep_max) then
+          es_max = Max(0., pet - ep_max)
         end if
         
         !! adjust es_max and ep_max for impervous urban cover
@@ -161,7 +159,7 @@
         esleft = es_max
 
         !! compute sublimation
-        if (w%tave > 0.) then
+        if (hru(j)%sno_mm > 0.) then
           if (hru(j)%sno_mm >= esleft) then
             !! take all soil evap from snow cover
             hru(j)%sno_mm = hru(j)%sno_mm - esleft
@@ -176,7 +174,6 @@
         endif
 
         !! compute evaporation from ponded water
-        wet_wat_d(j)%evap = 0.
         if (wet(j)%flo > 0.) then
           wetvol_mm = wet(j)%flo / (10. *  hru(j)%area_ha)    !mm=m3/(10.*ha)
           !! take all soil evap from wetland storage before taking from soil

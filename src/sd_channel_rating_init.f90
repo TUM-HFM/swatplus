@@ -103,7 +103,8 @@
       sd_ch(i)%msk%substeps = 1
 
       !! Discretize time interval to meet the stability criterion
-      if (det > detmax) then
+      !! zero-length channels (chl <= 1.e-3) are not routed (command) - detmax is 0
+      if (det > detmax .and. sd_ch(i)%chl > 1.e-3) then
         sd_ch(i)%msk%substeps = Int(det / detmax) + 1
       end if
       if (bsn_cc%rte == 0 .and. time%step <= 1) then

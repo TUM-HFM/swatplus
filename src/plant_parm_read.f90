@@ -47,7 +47,11 @@
         do ic = 1, imax
           read (104,*,iostat=eof) pldb(ic)
           if (eof < 0) exit
-          pldb(ic)%mat_yrs = Max (1, pldb(ic)%mat_yrs)
+          if (eof > 0) then
+            write (*,*) 'Error reading plants.plt for plant ', trim(pldb(ic)%plantnm)
+            call exit(1)
+          end if
+          pldb(ic)%mat_yrs = Max (1., pldb(ic)%mat_yrs)
         end do
         
         exit

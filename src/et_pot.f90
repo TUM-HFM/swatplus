@@ -243,7 +243,7 @@
             end do
           
             !! calculate canopy resistance
-            rc = 1. / (gsi_adj + 0.01)           !single leaf resistance
+            rc = 1. / (gsi_wav + 0.01)           !single leaf resistance
             rc = rc / (0.5 * (pcom(j)%lai_sum + 0.01) * (1.4 - 0.4 * co2y(time%yrs) / 330.))
 
             !! calculate maximum plant ET

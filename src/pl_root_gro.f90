@@ -35,7 +35,7 @@
 
         !! assume tree reaches final root:shoot ratio at 0.2 * years to maturity
         if (pldb(idp)%mat_yrs > 0) then
-          rto = float (pcom(j)%plcur(ipl)%curyr_mat) / float (pldb(idp)%mat_yrs)
+          rto = float (pcom(j)%plcur(ipl)%curyr_mat) / pldb(idp)%mat_yrs
           if (rto < 0.2) then
             pcom(j)%plg(ipl)%root_frac = pldb(idp)%rsr1 - (pldb(idp)%rsr1 - pldb(idp)%rsr2) * rto / .2
           else

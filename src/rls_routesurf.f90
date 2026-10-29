@@ -29,7 +29,7 @@
       ifield = hru(j)%dbs%field
 
       !! compute infiltration from surface runon and tile flow to next landscape unit
-      ls_overq = ob(iob)%hin_sur%flo + (ob(iob)%hin_til%flo * tile_fr_surf) / (10. * hru(j)%area_ha)   ! m3/10*ha = mm
+      ls_overq = ob(iob)%hin_sur%flo + ob(iob)%hin_til%flo * tile_fr_surf   ! mm - hin converted to mm in command
       precip_eff = precip_eff + ls_overq
       
       !! add surface runon to subdaily effective precip

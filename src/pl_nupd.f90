@@ -44,7 +44,7 @@
       
       !! set fraction to maturity for annuals and perennials
       if (pldb(idp)%typ == "perennial") then
-        matur_frac = float(pcom(j)%plcur(ipl)%curyr_mat) / float(pldb(idp)%mat_yrs)
+        matur_frac = float(pcom(j)%plcur(ipl)%curyr_mat) / pldb(idp)%mat_yrs
       else  !annuals
         matur_frac = pcom(j)%plcur(ipl)%phuacc
       end if

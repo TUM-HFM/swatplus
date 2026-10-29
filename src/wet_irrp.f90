@@ -66,6 +66,8 @@
           irrig(j)%water = rto * ch_stor(isrc)                       ! irrigation water
           cs_irr(isrc) = rto * ch_water(isrc)                         ! constituents in irrigation water
           ch_stor(isrc) = (1. - rto) * ch_stor(isrc)                        ! remainder stays in channel
+          !! ch_rtmusk routes tot_stor - remove withdrawn water there too
+          tot_stor(isrc)%flo = Max(0., tot_stor(isrc)%flo - irrig(j)%water%flo)
           ch_water(isrc) = (1. - rto) * ch_water(isrc)                      
         else
           irrig(j)%water%flo = irrig(j)%demand

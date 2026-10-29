@@ -218,6 +218,8 @@
               rto1 = (1. - rto)
               irrig(j)%water = rto * ch_stor(iob)                       ! organics in irrigation water
               ch_stor(iob) = rto1 * ch_stor(iob)                        ! remainder stays in channel
+              !! ch_rtmusk routes tot_stor - remove withdrawn water there too
+              tot_stor(iob)%flo = Max(0., tot_stor(iob)%flo - irrig(j)%water%flo)
               cs_irr(iob) = rto * ch_water(iob)                         ! constituents in irrigation water
               ch_water(iob) = rto1 * ch_water(iob)                      ! remainder stays in channel
               
