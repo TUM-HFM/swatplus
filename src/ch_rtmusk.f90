@@ -86,6 +86,7 @@
       flo_dep = 0.
       trans_loss = 0.
       evap = 0.
+      inflo = 0.          !no inflow unless ht1 has water - do not keep the previous channel's value
       ch_wat_d(jrch)%evap = 0.
       ch_wat_d(jrch)%seep = 0.
       
