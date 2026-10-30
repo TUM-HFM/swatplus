@@ -14,6 +14,7 @@
       integer :: id = 0             !none       |flo_con decision table number
       integer :: isrc = 0           !none       |source object number
       integer :: irec = 0           !none       |recall database number
+      integer :: ob_cur = 0         !none       |object passed to the decision table (0 = use number in decision table)
 
       !! zero total demand for each object
       wallod_out(iwallo)%dmd(idmd)%dmd_tot = 0.
@@ -62,13 +63,13 @@
           else
             !! use decision table for flow control - water allocation
             id = wallo(iwallo)%dmd(idmd)%rec_num   !dtbl_flo(i)%act_typ(iac)
-            ich = 0     !use number in decision table for divert
+            ob_cur = 0     !use number in decision table for divert
             !icmd is source channel object number
             icmd = sp_ob1%chandeg + wallo(iwallo)%cha - 1
             d_tbl => dtbl_flo(id)
             trans_m3 = 0.
-            call conditions (ich, id)
-            call actions (ich, icmd, id)
+            call conditions (ob_cur, id)
+            call actions (ob_cur, icmd, id)
             wallod_out(iwallo)%dmd(idmd)%dmd_tot = trans_m3
           end if
 
