@@ -65,6 +65,10 @@
         obcs(icmd)%hd(2) = hin_csz
       end if
 
+      !! add channel seepage (from ch_rtmusk since the last aquifer call) to incoming recharge
+      ob(icmd)%hin = ob(icmd)%hin + aqu_cha_seep(iaq)
+      aqu_cha_seep(iaq) = hz
+
       !convert from m^3 to mm
       aqu_d(iaq)%rchrg = ob(icmd)%hin%flo / (10. * ob(icmd)%area_ha)
       

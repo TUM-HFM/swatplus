@@ -162,6 +162,7 @@
         integer :: wallo = 0                !water allocation object number
         integer :: aqu_link = 0             !aquifer the channel is linked to
         integer :: aqu_link_ch = 0          !sequential channel number in the aquifer
+        integer :: aqu_seep = 0             !aquifer receiving the channel seepage (0 = seepage leaves the model)
         character(len=25) :: region = ""
         character(len=25) :: order = ""
         real :: chw = 3.        !m          |channel width
