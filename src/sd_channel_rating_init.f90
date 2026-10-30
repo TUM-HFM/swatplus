@@ -114,8 +114,9 @@
 
         !! intial inflow-outflow
         if (sd_ch(i)%msk%nsteps > 0) then
-          sd_ch(i)%in1_vol = rcurv%flo_rate / (86400. / sd_ch(i)%msk%nsteps)
-          sd_ch(i)%out1_vol = rcurv%flo_rate / (86400. / sd_ch(i)%msk%nsteps)
+          !! m3 per step from this channel's initial rating curve points (set in sd_hydsed_init)
+          sd_ch(i)%in1_vol = ch_rcurv(i)%in1%flo_rate * 86400. / sd_ch(i)%msk%nsteps
+          sd_ch(i)%out1_vol = ch_rcurv(i)%out1%flo_rate * 86400. / sd_ch(i)%msk%nsteps
         end if
 
         !! compute coefficients
