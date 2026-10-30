@@ -77,9 +77,9 @@
       do i_dep = 1, 2
         if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
         if (i_dep == 2) dep = sd_ch(i)%chd
-        !! c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
-        p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%chss ** 2)))
-        a = b * dep + dep / sd_ch(i)%chss
+        !! side slope chss = horizontal per vertical - bank run = dep*chss, bank length = dep*Sqrt(1+chss^2)
+        p = b + 2. * dep * Sqrt(1. + sd_ch(i)%chss ** 2)
+        a = b * dep + sd_ch(i)%chss * dep ** 2
         rh = a / p
         vel = Qman(1., rh, sd_ch(i)%chn, sd_ch(i)%chs)
         celerity = vel * 5. / 3.
