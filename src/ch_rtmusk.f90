@@ -71,6 +71,8 @@
       real :: wet_evol = 0. 
       real :: bf_flow = 0.               !m3/s           |bankfull flow rate * adjustment factor
       real :: pk_rto = 0.                !ratio          |peak to mean flow rate ratio
+      real :: wet_perim = 0.             !m              |wetted perimeter for transmission losses
+      type (hyd_output) :: seep_hyd      !m3             |seepage hydrograph for the day
 
       jrch = isdch
       jhyd = sd_dat(jrch)%hyd
@@ -84,6 +86,7 @@
       flo_dep = 0.
       trans_loss = 0.
       evap = 0.
+      inflo = 0.          !no inflow unless ht1 has water - do not keep the previous channel's value
       ch_wat_d(jrch)%evap = 0.
       ch_wat_d(jrch)%seep = 0.
       
@@ -114,6 +117,8 @@
       isubstep = 0
       dts = time%dtm / sd_ch(jrch)%msk%substeps * 60.
       dthr = dts / 3600.
+      iwst = ob(icmd)%wst
+      seep_hyd = hz
       
       !! subdaily time step
       do ii = 1, sd_ch(jrch)%msk%nsteps
@@ -136,16 +141,44 @@
         
         !! interpolate rating curve using inflow rates
         icha = jrch
-        inflo_rate = inflo / 86400.
+        inflo_rate = inflo / dts      !convert to cms
         call rcurv_interp_flo (icha, inflo_rate)
         ch_rcurv(jrch)%in2 = rcurv
         
+        !! transmission losses (seepage) from water in the reach before outflow
+        if (tot_stor(jrch)%flo > 1.e-6) then
+          !! mm/hr * km * m * hr = m3 - wetted perimeter averaged over inflow and previous outflow
+          !! seepage through the main channel bed only - capped at the bankfull wetted perimeter
+          wet_perim = 0.5 * (ch_rcurv(jrch)%in2%wet_perim + ch_rcurv(jrch)%out1%wet_perim)
+          wet_perim = Min(wet_perim, ch_rcurv(jrch)%elev(2)%wet_perim)
+          tl = sd_ch(jrch)%chk * sd_ch(jrch)%chl * wet_perim * dthr
+          tl = Min(tl, tot_stor(jrch)%flo)
+          rto = tl / tot_stor(jrch)%flo
+          seep_hyd = seep_hyd + rto * tot_stor(jrch)
+          tot_stor(jrch) = (1. - rto) * tot_stor(jrch)
+          trans_loss = trans_loss + tl
+        end if
+
+        !! evaporation losses from water in the reach before outflow
+        if (tot_stor(jrch)%flo > 1.e-6) then
+          !! calculate width of channel at water level - flood plain evap calculated in wetlands
+          topw = 1000. * sd_ch(jrch)%chl * sd_ch(jrch)%chw
+          !! mm/day * m2 / 1000. * fraction of day
+          ev = bsn_prm%evrch * wst(iwst)%weat%pet * topw / 1000. * dthr / 24.
+          ev = Min(ev, tot_stor(jrch)%flo)
+          tot_stor(jrch)%flo = tot_stor(jrch)%flo - ev
+          evap = evap + ev
+        end if
+
         !! if no water in channel - skip routing and set rating curves to zero
         if (tot_stor(jrch)%flo < 1.e-6) then
           ch_rcurv(jrch)%in1 = rcz
           ch_rcurv(jrch)%out1 = rcz
           sd_ch(jrch)%in1_vol = 0.
           sd_ch(jrch)%out1_vol = 0.
+          !! keep channel and flood plain storage consistent with total storage after losses
+          ch_stor(jrch) = tot_stor(jrch)
+          fp_stor(jrch) = hz
         else
           if (bsn_cc%rte == 1) then
           !! Muskingum flood routing method
@@ -198,37 +231,15 @@
         end if  ! tot_stor(jrch)%flo < 1.e-6
 
       end do    ! end of sub-daily loop
-      
-      !! compute water balance - evap and seep
-      !! calculate transmission losses (seepage)
-      if (ch_stor(jrch)%flo > 1.e-6) then
-        !! mm/hr * km * m * 24. = m3
-        trans_loss = sd_ch(jrch)%chk * sd_ch(jrch)%chl * rcurv%wet_perim * 24.
-        trans_loss = Min(trans_loss, ch_stor(jrch)%flo)
-        !! subtract transmission loses from outflow
-        rto = trans_loss / ch_stor(jrch)%flo
-        ch_stor(jrch) = (1. - rto) * ch_stor(jrch)
-      end if
-      ch_wat_d(ich)%seep = trans_loss
 
-      !! calculate evaporation losses
-      if (ch_stor(jrch)%flo > 1.e-6) then
-        !! calculate width of channel at water level - flood plain evap calculated in wetlands
-        !if (dep_flo <= sd_ch(jrch)%chd) then
-        !  topw = ch_rcurv(jrch)%out2%surf_area
-        !else
-          topw = 1000. * sd_ch(jrch)%chl * sd_ch(jrch)%chw
-        !end if
-        iwst = ob(icmd)%wst
-        !! mm/day * m2 / 1000.
-        evap = bsn_prm%evrch * wst(iwst)%weat%pet * topw / 1000.
-        evap = Min(evap, ch_stor(jrch)%flo)
-        rto = evap / ch_stor(jrch)%flo
-        ch_stor(jrch)%flo = (1. - rto) * ch_stor(jrch)%flo
-      end if
+      !! seepage and evaporation are taken from the reach in the sub-daily loop above
+      ch_wat_d(ich)%seep = trans_loss
       ch_wat_d(ich)%evap = evap
-      
-      tot_stor(jrch) = ch_stor(jrch) + fp_stor(jrch)
+
+      !! seepage recharges the aquifer under the channel on the next aquifer call
+      if (sd_ch(jrch)%aqu_seep > 0 .and. bsn_cc%gwflow == 0) then
+        aqu_cha_seep(sd_ch(jrch)%aqu_seep) = aqu_cha_seep(sd_ch(jrch)%aqu_seep) + seep_hyd
+      end if
 
       !! check water balance at end of day
       sum_outflo = ht2%flo

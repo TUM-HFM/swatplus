@@ -60,11 +60,11 @@
            hru(ihru)%luse%ovn) ** .6 / (hru(ihru)%topo%slope + .0001) ** .3
         ch_slope = .5 * topo_db(ith)%slope
         ch_n = hru(ihru)%luse%ovn
-        !! assume length to width (l/w) ratio of 2 --> A=l*w - A=l*l/2 - l=sqrt(A/2)
+        !! assume length to width (l/w) ratio of 2 --> A=l*w - A=l*l/2 - l=sqrt(2*A) (km, km2)
         !! assume channel begins at 1/2 of distance
-        ch_l = 0.5 * sqrt(hru(ihru)%area_ha / 2.)
+        ch_l = 0.5 * sqrt(2. * hru(ihru)%km)
         !ch_l = hru(ihru)%field%length / 1000.
-        t_ch = .31 * ch_l * ch_n**.75 / (hru(ihru)%km**.125 * (ch_slope + .001)**.375)
+        t_ch = .62 * ch_l * ch_n**.75 / (hru(ihru)%km**.125 * (ch_slope + .001)**.375)
         tconc(ihru) = t_ov(ihru) + t_ch
         !! compute fraction of surface runoff that is reaching the main channel
         if (time%step > 1) then

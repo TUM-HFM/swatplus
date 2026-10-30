@@ -35,9 +35,9 @@
       do i_dep = 1, 2
         if (i_dep == 1) dep = 0.1 * sd_ch(i)%chd
         if (i_dep == 2) dep = sd_ch(i)%chd
-        !! c^2=a^2+b^2 - a=dep; a/b=slope; b^2=a^2/slope^2
-        p = b + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%chss ** 2)))
-        a = b * dep + dep / sd_ch(i)%chss
+        !! side slope chss = horizontal per vertical - bank run = dep*chss, bank length = dep*Sqrt(1+chss^2)
+        p = b + 2. * dep * Sqrt(1. + sd_ch(i)%chss ** 2)
+        a = b * dep + sd_ch(i)%chss * dep ** 2
         rh = a / p
         ch_rcurv(i)%elev(i_dep)%dep = dep
         ch_rcurv(i)%elev(i_dep)%wet_perim = p
@@ -69,8 +69,8 @@
         dep = frac_abov * sd_ch(i)%chd
         !! flood plain perimeter - p^2 = dep^2 + width^2
         p = p_bf + 2. * Sqrt(dep ** 2 * (1. + 1. / (sd_ch(i)%fps ** 2)))
-        !! flood plain cross section area - dep*width = dep^2 / slope (slope = dep/width)
-        a = a_bf + b * dep + dep ** 2 / sd_ch(i)%fps
+        !! flood plain cross section area - dep*bankfull top width + dep*width = dep^2 / slope (slope = dep/width)
+        a = a_bf + sd_ch(i)%chw * dep + dep ** 2 / sd_ch(i)%fps
         rh = a / p
         ifp_dep = i_dep + 2
         ch_rcurv(i)%elev(ifp_dep)%dep = (1. + frac_abov) * sd_ch(i)%chd
@@ -79,7 +79,7 @@
         ch_rcurv(i)%elev(ifp_dep)%top_wid = sd_ch(i)%chw + 2. * dep / sd_ch(i)%fps
         ch_rcurv(i)%elev(ifp_dep)%surf_area = ch_rcurv(i)%elev(ifp_dep)%top_wid * sd_ch(i)%chl
         ch_rcurv(i)%elev(ifp_dep)%vol_ch = vol_bf
-        ch_rcurv(i)%elev(ifp_dep)%vol_fp = ch_rcurv(i)%elev(ifp_dep)%top_wid * dep * sd_ch(i)%chl * 1000.
+        ch_rcurv(i)%elev(ifp_dep)%vol_fp = (a - a_bf) * sd_ch(i)%chl * 1000.
         ch_rcurv(i)%elev(ifp_dep)%vol = vol_bf + ch_rcurv(i)%elev(ifp_dep)%vol_fp
         ch_rcurv(i)%elev(ifp_dep)%flo_rate = Qman(a, rh, sd_ch(i)%fpn, sd_ch(i)%chs)
         vel = Qman(1., rh, sd_ch(i)%fpn, sd_ch(i)%chs)

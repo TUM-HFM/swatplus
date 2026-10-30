@@ -490,6 +490,7 @@
         type (geomorphic_baseflow_channel_data), dimension(:),allocatable :: ch
       end type channel_aquifer_elements
       type (channel_aquifer_elements),dimension(:),allocatable :: aq_ch         !sorted by drainage area (smallest first)
+      type (hyd_output), dimension(:), allocatable :: aqu_cha_seep              !m3 |channel seepage added to aquifer recharge on the next aquifer call
       
       !delivery ratio - all fractions 
       type (hyd_output), dimension(:), allocatable :: dr          !delivery ratio for objects- chan, res, lu

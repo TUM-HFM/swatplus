@@ -76,6 +76,7 @@
           ob(icmd)%hin_sur = hz
           ob(icmd)%hin_lat = hz
           ob(icmd)%hin_til = hz
+          ob(icmd)%hin_aqu = hz
           ht1 = hz
           if (cs_db%num_tot > 0 .and. obcs_alloc(icmd).eq.1) then
             obcs(icmd)%hin = hin_csz
@@ -157,6 +158,9 @@
                     end if
                   end select
                 end if  
+              else if (ob(icmd)%obtyp_in(in) == "aqu" .and. ob(icmd)%typ == "hru") then
+                ! aquifer inflow - added to the bottom soil layer in hru_control (rls_routeaqu)
+                ob(icmd)%hin_aqu = ob(icmd)%hin_aqu + frac_in * ob(iob)%hd(1)
               else
                 ! add total inflow to surface runon if channel or recall
                 ob(icmd)%hin_sur = ob(icmd)%hin_sur + frac_in * ob(iob)%hd(1)
@@ -204,9 +208,19 @@
               if (ob(iob)%typ == "hru" .or. ob(iob)%typ == "ru") then
                 select case (ob(icmd)%htyp_in(in))
                 case ("tot")   ! total flow
-                  hyd_flo = ob(iob)%hyd_flo(iday,:) + (ob(iob)%hd(4)%flo + ob(iob)%hd(5)%flo) / time%step
+                  if (time%step == 1) then
+                    !! daily - hyd_flo already holds the total (hru_hyds, ru_control)
+                    hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  else
+                    hyd_flo = ob(iob)%hyd_flo(iday,:) + (ob(iob)%hd(4)%flo + ob(iob)%hd(5)%flo) / time%step
+                  end if
                 case ("sur")   ! surface runoff
-                  hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  if (time%step == 1) then
+                    !! daily - hyd_flo holds the total, surface runoff is hd(3)
+                    hyd_flo(:) = ob(iob)%hd(3)%flo
+                  else
+                    hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  end if
                 case ("rhg")   ! recharge
                   hyd_flo(:) = ob(iob)%hd(2)%flo / time%step
                 case ("lat")   ! lateral soil flow
@@ -253,6 +267,8 @@
             ob(icmd)%hin_lat%flo = ob(icmd)%hin_lat%flo / 10.      ! m3/10*ha = mm
             ob(icmd)%hin_til = ob(icmd)%hin_til / conv
             ob(icmd)%hin_til%flo = ob(icmd)%hin_til%flo / 10.      ! m3/10*ha = mm
+            ob(icmd)%hin_aqu = ob(icmd)%hin_aqu / conv
+            ob(icmd)%hin_aqu%flo = ob(icmd)%hin_aqu%flo / 10.      ! m3/10*ha = mm
           end if
         end if
 

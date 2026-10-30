@@ -25,6 +25,9 @@
       !! aquifer to channel flow
       call aqu2d_init
       
+      !! aquifer receiving the channel seepage
+      call sd_channel_aqu_seep_init
+
       do ich = 1, sp_ob%chan
         !! initialize flow routing variables
         call ch_ttcoef (ich)
