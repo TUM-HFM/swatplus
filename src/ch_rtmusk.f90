@@ -140,7 +140,7 @@
         
         !! interpolate rating curve using inflow rates
         icha = jrch
-        inflo_rate = inflo / 86400.
+        inflo_rate = inflo / dts      !convert to cms
         call rcurv_interp_flo (icha, inflo_rate)
         ch_rcurv(jrch)%in2 = rcurv
         

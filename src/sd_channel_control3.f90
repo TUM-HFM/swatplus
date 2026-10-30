@@ -108,6 +108,7 @@
       real :: conc_chng = 0.          !              |change in concentration (and mass) in channel sol and org N and P
       real :: inflo_rate = 0.
       real :: aqu_inflo = 0.          !m3            |aquifer inflow if using geomorphic baseflow
+      real :: flo_div = 0.            !m3            |channel outflow before diversions
       ich = isdch
       isd_db = sd_dat(ich)%hyd
       iwst = ob(icmd)%wst
@@ -390,6 +391,7 @@
 
       ich = isdch
             
+      flo_div = ht2%flo
       !! check decision table for flow control - water diversion
       if (ob(icmd)%ruleset /= "null" .and. ob(icmd)%ruleset /= "0") then
         id = ob(icmd)%flo_dtbl
@@ -410,6 +412,10 @@
       end if
       !! set outflow hyd to ht2 after diverting water
       ob(icmd)%hd(1) = ht2
+      !! reduce subdaily outflow by the diverted fraction - downstream channels build tsin from hyd_flo
+      if (flo_div > 1.e-6 .and. ht2%flo < flo_div) then
+        ob(icmd)%hyd_flo(1,:) = ob(icmd)%hyd_flo(1,:) * ht2%flo / flo_div
+      end if
       
       !if (isdch == 780) then
       !    !write (7778,*) isdch, ht1%flo, ht2%flo
