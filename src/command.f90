@@ -204,9 +204,19 @@
               if (ob(iob)%typ == "hru" .or. ob(iob)%typ == "ru") then
                 select case (ob(icmd)%htyp_in(in))
                 case ("tot")   ! total flow
-                  hyd_flo = ob(iob)%hyd_flo(iday,:) + (ob(iob)%hd(4)%flo + ob(iob)%hd(5)%flo) / time%step
+                  if (time%step == 1) then
+                    !! daily - hyd_flo already holds the total (hru_hyds, ru_control)
+                    hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  else
+                    hyd_flo = ob(iob)%hyd_flo(iday,:) + (ob(iob)%hd(4)%flo + ob(iob)%hd(5)%flo) / time%step
+                  end if
                 case ("sur")   ! surface runoff
-                  hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  if (time%step == 1) then
+                    !! daily - hyd_flo holds the total, surface runoff is hd(3)
+                    hyd_flo(:) = ob(iob)%hd(3)%flo
+                  else
+                    hyd_flo(:) = ob(iob)%hyd_flo(iday,:)
+                  end if
                 case ("rhg")   ! recharge
                   hyd_flo(:) = ob(iob)%hd(2)%flo / time%step
                 case ("lat")   ! lateral soil flow
