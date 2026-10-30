@@ -24,10 +24,9 @@
 
       use basin_module
       use time_module
-      use climate_module, only : wst, w
+      use climate_module, only : w
       use hru_module, only : hru, canstor,ihru, precip_eff
       use plant_module
-      use hydrograph_module, only : ob
       
       implicit none
 
@@ -37,14 +36,10 @@
       real :: canmxl = 0.        !mm H2O        |maximum canopy storage at current day's leaf
                                  !              |area
       real :: canstori = 0.      !mm H2O        |initial canopy storage water content 
-      integer :: iwst = 0        !none          |counter
-      integer :: iob = 0
       !real :: precip_eff        !mm            |daily effective precip for runoff calculations = precipday + ls_overq + snomlt - canstor
                                  !     |precip_eff = precipday + ls_overq - snofall + snomlt - canstor
       
       j = ihru
-      iob = hru(j)%obj_no
-      iwst = ob(iob)%wst 
 
       if (pcom(j)%lai_sum < 0.001 .or. pcom(j)%laimx_sum < 0.001) return
 
@@ -62,20 +57,9 @@
               canstor(j) = canmxl
             endif
           end do
-          if (canstor(j) > canstori) then
-            do ii = 1, time%step
-              xx = 0.
-              xx = wst(iwst)%weat%ts(ii)
-              w%ts(ii) = w%ts(ii) - (canstor(j) - canstori)
-
-              if (w%ts(ii) < 0.) then
-                canstori = canstori + xx
-                w%ts(ii) = 0.
-              else
-                canstori = canstor(j)
-              endif
-            end do
-          end if
+          !! intercepted water is already removed from w%ts above - remove it from precip_eff for infiltration
+          precip_eff = precip_eff - (canstor(j) - canstori)
+          precip_eff = Max(0., precip_eff)
 
         else
           canmxl = hru(j)%hyd%canmx * pcom(j)%lai_sum / pcom(j)%laimx_sum
