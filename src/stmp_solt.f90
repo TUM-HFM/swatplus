@@ -51,6 +51,7 @@
       real :: tcov = 0.          !deg C         |temperature of soil surface corrected for cover
       real :: tmp_srf = 0.       !deg C         |temperature of soil surface
       real :: cover = 0.         !kg/ha         |soil cover
+      real :: sno_fac = 0.       !none          |snow cover factor (Doro et al., 2021, eq. 3)
 
       j = ihru
 
@@ -86,6 +87,7 @@
 !! SWAT manual equation 2.3.11
       cover = pl_mass(j)%ab_gr_com%m + rsd1(j)%tot_com%m
       bcv = cover / (cover + Exp(7.563 - 1.297e-4 * cover))
+      sno_fac = 0.
       if (hru(j)%sno_mm /= 0.) then
         if (hru(j)%sno_mm <= 120.) then
           xx = 0.
@@ -94,6 +96,8 @@
           xx = 1.
         end if
         bcv = Max(xx,bcv)
+        !! HFM: snow cover factor, Doro et al. (2021) eq. 3, upper limit P87 = 0.95
+        sno_fac = Min(0.95, hru(j)%sno_mm / (hru(j)%sno_mm + Exp(1.44 - 0.37 * hru(j)%sno_mm)))
       end if
 
 !! calculate temperature at soil surface
@@ -113,6 +117,14 @@
 !!    in summer due to high biomass
 
       tmp_srf = 0.5 * (tbare + tcov)  ! following Jimmy"s code
+
+!!    HFM: snow insulation. The average above keeps half of the air signal even
+!!    under a deep snowpack, so snow-covered soils froze all winter. Under snow
+!!    the surface temperature is pulled toward 0 C, Doro et al. (2021) eq. 9:
+!!    Doro, L. et al., 2021. Improving the simulation of soil temperature within
+!!    the EPIC model. Environ. Model. Softw. 144, 105140.
+!!    Unchanged on snow-free days (sno_fac = 0).
+      tmp_srf = (1. - sno_fac) * tmp_srf
 
 !! calculate temperature for each layer on current day
       xx = 0.
